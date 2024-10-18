@@ -1,5 +1,12 @@
+import AppRoutes from "./routes/App.routes";
+import AppTheme from "./theme/AppTheme";
+
 function App() {
-  return <>app</>;
+  return (
+    <AppTheme>
+      <AppRoutes />
+    </AppTheme>
+  );
 }
 
 export default App;
