@@ -29,10 +29,11 @@ export const companySlice = createSlice({
       .addCase(fetchCompaniesList.fulfilled, (state, action) => {
         state.isCompaniesListLoading = false;
         console.log(action.payload);
-        state.companiesList = [
-          ...state.companiesList,
-          ...(action.payload?.companies ?? []),
-        ];
+        // state.companiesList = [
+        //   ...state.companiesList,
+        //   ...(action.payload?.companies ?? []),
+        // ];
+        state.companiesList = [...(action.payload?.companies ?? [])];
         state.companyLastVisible = action.payload?.lastVisible ?? null;
       })
       .addCase(fetchCompaniesList.rejected, (state) => {

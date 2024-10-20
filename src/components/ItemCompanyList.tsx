@@ -24,6 +24,10 @@ const ItemCompanyList = ({ name, logo, description }: IItemCompanyProps) => {
         height: "auto",
         overflow: "hidden",
         boxSizing: "border-box",
+        transition: "all ease-out 0.2s",
+        "&:hover": {
+          transform: "scale(1.05)",
+        },
       }}
     >
       <CardActionArea

@@ -16,7 +16,7 @@ const AppRoutes = () => {
             element: <Company />,
           },
           {
-            path: "/ipo",
+            path: "/ipo/:companyId",
             element: <div>IPO</div>,
           },
         ],

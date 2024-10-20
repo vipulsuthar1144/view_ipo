@@ -12,7 +12,7 @@ const useCompanyController = () => {
   } = useAppSelector((state) => state.company);
 
   React.useEffect(() => {
-    dispatch(fetchCompaniesList({ pageSize: 50 }));
+    companiesList.length == 0 && dispatch(fetchCompaniesList({ pageSize: 50 }));
   }, []);
 
   // const loadMore = () => {
