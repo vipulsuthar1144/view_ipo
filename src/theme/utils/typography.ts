@@ -1,9 +1,11 @@
 import { TypographyOptions } from "@mui/material/styles/createTypography";
 import { CSSProperties } from "react";
+import AppColors from "./AppColors";
 
 const sharedStyles: CSSProperties = {
   userSelect: "none",
-  color: "text.primary",
+  color: AppColors.textPrimary,
+  fontFamily: "Inter, system-ui, Avenir, Helvetica, Arial, sans-serif",
 };
 
 export const typography: TypographyOptions = {
@@ -50,11 +52,13 @@ export const typography: TypographyOptions = {
   subtitle1: {
     fontSize: "15px",
     fontWeight: 400,
+    lineHeight: 1.3,
     ...sharedStyles,
   },
   subtitle2: {
     fontSize: "13px",
     fontWeight: 400,
+    lineHeight: 1.2,
     ...sharedStyles,
   },
   button: {

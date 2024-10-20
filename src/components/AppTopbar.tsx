@@ -2,7 +2,7 @@ import { imgLogo } from "@assets/images";
 import { AppBar, Box, Button, Toolbar } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useEffect, useState } from "react";
-import { Route, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import AppColors from "../theme/utils/AppColors";
 import ImageComp from "./design/Image";
 
@@ -35,7 +35,7 @@ const AppTopbar = () => {
       sx={{
         backgroundColor: AppColors.white,
         backgroundImage: "none",
-        boxShadow: "none",
+        boxShadow: "0px 10px 10px 2px rgba(0,0,0,0.2)",
         zIndex: 1,
       }}
     >
@@ -59,6 +59,15 @@ const AppTopbar = () => {
                   selectedItem == item.id
                     ? AppColors.primaryBgColor
                     : "transparent",
+                height: "100%",
+                width: "100px",
+                color: AppColors.textPrimary,
+                fontSize: "14px",
+                fontWeight: 600,
+                // letterSpacing: "0.15px",
+                padding: "10px 15px",
+                borderRadius: "10px 10px 0 0",
+                // transition: `backgroundColor ease 1s`,
               }}
             >
               {item.name}
@@ -73,8 +82,9 @@ const AppTopbar = () => {
 const useStyles = makeStyles(() => ({
   appbar: {
     top: 0,
-    maxWidth: "50%",
-    width: "50%",
+    // left: 0,
+    maxWidth: "30em",
+    width: "100%",
     height: "fit-content",
     borderRadius: "0px 0px 20px 20px",
     // height: "80px",
@@ -103,9 +113,8 @@ const useStyles = makeStyles(() => ({
     color: AppColors.textPrimary,
     fontSize: "14px",
     fontWeight: 600,
-    letterSpacing: "0.15px",
-    padding: "10px 20px",
-
+    // letterSpacing: "0.15px",
+    padding: "10px 15px",
     borderRadius: "10px 10px 0 0",
     // transition: `backgroundColor ease 1s`,
   },

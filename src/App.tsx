@@ -1,11 +1,15 @@
+import { Provider } from "react-redux";
 import AppRoutes from "./routes/App.routes";
 import AppTheme from "./theme/AppTheme";
+import { store } from "./store/store";
 
 function App() {
   return (
-    <AppTheme>
-      <AppRoutes />
-    </AppTheme>
+    <Provider store={store}>
+      <AppTheme>
+        <AppRoutes />
+      </AppTheme>
+    </Provider>
   );
 }
 

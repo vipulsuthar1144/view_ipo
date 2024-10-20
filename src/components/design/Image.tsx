@@ -50,8 +50,8 @@ const ImageCompWithLoader = ({
   errorImage,
   isPreventClickEffect = false,
 }: IGlobalImageProps) => {
-  const [imgSrc, setImgSrc] = useState(img);
-  const [isLoading, setIsLoading] = useState(true);
+  const [imgSrc, setImgSrc] = useState(img ? img : errorImage);
+  const [isLoading, setIsLoading] = useState(img ? true : false);
   return (
     <Box
       sx={{
@@ -60,7 +60,8 @@ const ImageCompWithLoader = ({
         overflow: "hidden",
         boxSizing: "border-box",
         ...style,
-        backgroundColor: "#ffffff",
+        // backgroundColor: "#ffffff",
+        // backgroundColor: "red",
       }}
     >
       <Box
@@ -80,10 +81,11 @@ const ImageCompWithLoader = ({
         sx={{
           width: "100%",
           height: "100%",
-          objectFit: "cover",
+          objectFit: "contain",
           cursor: "pointer",
           opacity: isLoading ? 0 : 1,
           userSelect: "none",
+          // ...style,
         }}
       />
     </Box>
