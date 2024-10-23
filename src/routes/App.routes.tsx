@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppLayout from "../layout/App.layout";
 import Company from "@/pages/company/Company";
 import FallbackError from "@components/FallbackError";
+import CompanyDetails from "@/pages/company/CompanyDetails";
 
 const AppRoutes = () => {
   const routes = createBrowserRouter(
@@ -16,8 +17,8 @@ const AppRoutes = () => {
             element: <Company />,
           },
           {
-            path: "/ipo/:companyId",
-            element: <div>IPO</div>,
+            path: "ipo/:companyId",
+            element: <CompanyDetails />,
           },
         ],
       },

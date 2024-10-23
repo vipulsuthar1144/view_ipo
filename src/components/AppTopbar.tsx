@@ -1,32 +1,30 @@
 import { imgLogo } from "@assets/images";
-import { AppBar, Box, Button, Toolbar } from "@mui/material";
+import { AppBar, Toolbar } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import AppColors from "../theme/utils/AppColors";
 import ImageComp from "./design/Image";
 
 const AppTopbar = () => {
   const classes = useStyles();
-  const navigate = useNavigate();
-  const [selectedItem, setSelectedItem] = useState<string | null>("/");
-  const location = useLocation();
+  // const navigate = useNavigate();
+  // const [selectedItem, setSelectedItem] = useState<string | null>("/");
+  // const location = useLocation();
 
-  useEffect(() => {
-    setSelectedItem(location.pathname);
-  }, [location.pathname]);
+  // useEffect(() => {
+  //   setSelectedItem(location.pathname);
+  // }, [location.pathname]);
 
-  const menuItems = [
-    { id: "/", name: "Companies" },
-    { id: "/ipo", name: "IPO's" },
-  ];
+  // const menuItems = [
+  //   { id: "/", name: "Companies" },
+  //   { id: "/ipo/jaiho", name: "IPO's" },
+  // ];
 
-  const handleSwitchRoute = (route: string) => {
-    if (selectedItem !== route) {
-      setSelectedItem(route);
-      navigate(route);
-    }
-  };
+  // const handleSwitchRoute = (route: string) => {
+  //   if (selectedItem !== route) {
+  //     setSelectedItem(route);
+  //     navigate(route);
+  //   }
+  // };
 
   return (
     <AppBar
@@ -48,7 +46,7 @@ const AppTopbar = () => {
             aspectRatio: 1,
           }}
         />
-        <Box className={classes.menuContainer}>
+        {/* <Box className={classes.menuContainer}>
           {menuItems.map((item, index) => (
             <Button
               key={index}
@@ -73,7 +71,7 @@ const AppTopbar = () => {
               {item.name}
             </Button>
           ))}
-        </Box>
+        </Box> */}
       </Toolbar>
     </AppBar>
   );
@@ -91,7 +89,7 @@ const useStyles = makeStyles(() => ({
   },
   toolBar: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "center",
     position: "relative",
   },
   menuContainer: {

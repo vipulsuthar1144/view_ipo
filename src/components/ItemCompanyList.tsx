@@ -8,9 +8,15 @@ interface IItemCompanyProps {
   name?: string;
   logo?: string;
   description?: string;
+  onClick?: () => void;
 }
 
-const ItemCompanyList = ({ name, logo, description }: IItemCompanyProps) => {
+const ItemCompanyList = ({
+  name,
+  onClick,
+  logo,
+  description,
+}: IItemCompanyProps) => {
   return (
     <Card
       sx={{
@@ -31,6 +37,7 @@ const ItemCompanyList = ({ name, logo, description }: IItemCompanyProps) => {
       }}
     >
       <CardActionArea
+        onClick={onClick}
         sx={{
           height: "100%",
           display: "flex",

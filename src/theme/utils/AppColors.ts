@@ -4,6 +4,7 @@ const AppColors = {
   secondaryColor: "#175C4C50",
   textPrimary: "#202224",
   textSecondary: "#636466",
+  greenColor: "#008000",
   white: "#ffffff",
   black: "#000000",
 };

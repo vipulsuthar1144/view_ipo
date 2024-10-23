@@ -1,9 +1,11 @@
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { fetchCompaniesList } from "@/store/thunkService/company.thunkService";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const useCompanyController = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const {
     isCompaniesListLoading,
     isCompaniesListError,
@@ -20,7 +22,11 @@ const useCompanyController = () => {
   //     fetchCompaniesList({ pageSize: 20, lastVisible: companyLastVisible })
   //   );
   // };
+  const listenerGoToCompanyDetails = (companyId?: string) => {
+    companyId && navigate(`/ipo/${companyId}`);
+  };
   return {
+    listenerGoToCompanyDetails,
     isCompaniesListLoading,
     isCompaniesListError,
     companiesList,
