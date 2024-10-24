@@ -1,22 +1,151 @@
+import { IIPOSchema, ITimeline } from "@/schema/ipo.schema";
 import AppColors from "@/theme/utils/AppColors";
 import { imgDefaultCompany } from "@assets/images";
 import { ImageCompWithLoader } from "@components/design/Image";
 import { TwoLineTypo } from "@components/design/styledComponents";
-import { Card, CardActionArea, CardContent } from "@mui/material";
+import { Card, CardActionArea, CardContent, Typography } from "@mui/material";
+import { formatDate, formatPrice, isPastDate } from "@utils/genaralFunctions";
 
 interface IItemCompanyProps {
-  name?: string;
-  logo?: string;
-  description?: string;
+  IPOData?: IIPOSchema;
   onClick?: () => void;
 }
 
-const ItemCompanyList = ({
-  name,
-  onClick,
-  logo,
-  description,
-}: IItemCompanyProps) => {
+const ItemCompanyList = ({ onClick, IPOData }: IItemCompanyProps) => {
+  const renderOfferDateOrListedOnDate = (timeLine?: ITimeline) => {
+    if (!timeLine) return;
+    if (isPastDate(timeLine?.listing_date)) {
+      return (
+        <TwoLineTypo
+          variant="subtitle1"
+          color={AppColors.textSecondary}
+          sx={{ textTransform: "capitalize" }}
+        >
+          Listed On : {formatDate(timeLine.listing_date)} at{" "}
+          {formatPrice(IPOData?.listing_price)}
+        </TwoLineTypo>
+      );
+    }
+    return (
+      <TwoLineTypo
+        variant="subtitle1"
+        color={AppColors.textSecondary}
+        sx={{ textTransform: "capitalize" }}
+      >
+        Offer Date : {formatDate(timeLine.open_date)} -{" "}
+        {formatDate(timeLine.end_date)}
+      </TwoLineTypo>
+    );
+  };
+
+  const renderIPOStatus = () => {
+    if (isPastDate(IPOData?.timeline?.listing_date ?? "")) {
+      return (
+        <span
+          style={{
+            padding: "0px 10px",
+            borderRadius: "5px",
+            // margin: "0 20px",
+            backgroundColor: "green",
+            textTransform: "capitalize",
+            color: "white",
+            fontSize: "18px",
+          }}
+        >
+          Listed
+        </span>
+      );
+    }
+    if (isPastDate(IPOData?.timeline?.allotment_date ?? "")) {
+      return (
+        <span
+          style={{
+            padding: "0px 10px",
+            borderRadius: "5px",
+            // margin: "0 20px",
+            backgroundColor: "orange",
+            textTransform: "capitalize",
+            color: "white",
+            fontSize: "18px",
+          }}
+        >
+          {`•`}
+          Allotment Out
+        </span>
+      );
+    }
+    if (isPastDate(IPOData?.timeline?.end_date ?? "")) {
+      return (
+        <span
+          style={{
+            padding: "0px 10px",
+            borderRadius: "5px",
+            // margin: "0 20px",
+            backgroundColor: "red",
+            textTransform: "capitalize",
+            color: "white",
+            fontSize: "18px",
+          }}
+        >
+          {`•`}
+          Closed
+        </span>
+      );
+    }
+    if (isPastDate(IPOData?.timeline?.open_date ?? "")) {
+      return (
+        <span
+          style={{
+            padding: "0px 10px",
+            borderRadius: "5px",
+            // margin: "0 20px",
+            backgroundColor: "green",
+            textTransform: "capitalize",
+            color: "white",
+            fontSize: "18px",
+          }}
+        >
+          {`•`}
+          Live
+        </span>
+      );
+    }
+    if (!isPastDate(IPOData?.timeline?.open_date ?? "")) {
+      return (
+        <span
+          style={{
+            padding: "0px 10px",
+            borderRadius: "5px",
+            // margin: "0 20px",
+            backgroundColor: "purple",
+            textTransform: "capitalize",
+            color: "white",
+            fontSize: "18px",
+          }}
+        >
+          {`•`}
+          Pre Apply
+        </span>
+      );
+    }
+    return (
+      <span
+        style={{
+          padding: "0px 10px",
+          borderRadius: "5px",
+          // margin: "0 20px",
+          backgroundColor: "green",
+          textTransform: "capitalize",
+          color: "white",
+          fontSize: "18px",
+        }}
+      >
+        {`•`}
+        {`${IPOData?.status}`}
+      </span>
+    );
+  };
+
   return (
     <Card
       sx={{
@@ -49,7 +178,7 @@ const ItemCompanyList = ({
         }}
       >
         <ImageCompWithLoader
-          img={logo}
+          img={IPOData?.logo}
           alt={"Company logo"}
           errorImage={imgDefaultCompany}
           style={{
@@ -69,19 +198,19 @@ const ItemCompanyList = ({
             flex: 2,
           }}
         >
+          <Typography
+            variant="h4"
+            sx={{ textTransform: "capitalize", mb: "2px" }}
+          >
+            {renderIPOStatus()}
+          </Typography>
           <TwoLineTypo
             variant="h4"
             sx={{ textTransform: "capitalize", mb: "2px" }}
           >
-            {name}
+            {IPOData?.name}
           </TwoLineTypo>
-          <TwoLineTypo
-            variant="subtitle1"
-            color={AppColors.textSecondary}
-            sx={{ textTransform: "capitalize" }}
-          >
-            {description}
-          </TwoLineTypo>
+          {renderOfferDateOrListedOnDate(IPOData?.timeline)}
         </CardContent>
       </CardActionArea>
     </Card>

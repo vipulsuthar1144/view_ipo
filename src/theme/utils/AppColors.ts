@@ -5,6 +5,7 @@ const AppColors = {
   textPrimary: "#202224",
   textSecondary: "#636466",
   greenColor: "#008000",
+  btnOrangeColor: "#ff0013",
   white: "#ffffff",
   black: "#000000",
 };

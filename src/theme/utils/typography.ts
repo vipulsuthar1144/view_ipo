@@ -3,7 +3,7 @@ import { CSSProperties } from "react";
 import AppColors from "./AppColors";
 
 const sharedStyles: CSSProperties = {
-  userSelect: "none",
+  // userSelect: "none",
   color: AppColors.textPrimary,
   fontFamily: "Inter, system-ui, Avenir, Helvetica, Arial, sans-serif",
 };

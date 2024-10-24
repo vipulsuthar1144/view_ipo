@@ -31,11 +31,12 @@ export const formatPrice = (price?: number) => {
 };
 
 export const formatNumber = (num?: number) => {
+  if (num == 0) return "0";
   if (!num || num == null) return "-";
   return new Intl.NumberFormat("en-IN").format(num);
 };
 
-export const isPastDate = (dateToCompare: string) => {
+export const isPastDate = (dateToCompare?: string) => {
   if (!moment(dateToCompare).isValid()) return;
   return moment(dateToCompare).isBefore(moment().startOf("day"));
 };

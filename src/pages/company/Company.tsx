@@ -34,16 +34,8 @@ const Company = () => {
         {companiesList?.map((item) => (
           <Grid2 size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={item.id}>
             <ItemCompanyList
-              // onClick={() => listenerGoToCompanyDetails(item.slug)}
-              onClick={() => listenerGoToCompanyDetails("pkh-ventures-limited")}
-              // onClick={() =>
-              //   listenerGoToCompanyDetails(
-              //     "garuda-construction-engineering-ipo"
-              //   )
-              // }
-              name={item.name}
-              description={item?.about}
-              logo={item.logo}
+              onClick={() => listenerGoToCompanyDetails(item.id)}
+              IPOData={item}
             />
           </Grid2>
         ))}

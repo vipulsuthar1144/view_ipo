@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import { fetchCompaniesList } from "@/store/thunkService/company.thunkService";
+import { fetchCompaniesList } from "@/store/thunkService/ipo.thunkService";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -11,7 +11,7 @@ const useCompanyController = () => {
     isCompaniesListError,
     companiesList,
     companyLastVisible,
-  } = useAppSelector((state) => state.company);
+  } = useAppSelector((state) => state.IPO);
 
   React.useEffect(() => {
     companiesList.length == 0 && dispatch(fetchCompaniesList({ pageSize: 50 }));
