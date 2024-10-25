@@ -4,7 +4,12 @@ import { imgDefaultCompany } from "@assets/images";
 import { ImageCompWithLoader } from "@components/design/Image";
 import { TwoLineTypo } from "@components/design/styledComponents";
 import { Card, CardActionArea, CardContent, Typography } from "@mui/material";
-import { formatDate, formatPrice, isPastDate } from "@utils/genaralFunctions";
+import {
+  formatDate,
+  formatPrice,
+  isPastDate,
+  isPastOrSameDate,
+} from "@utils/genaralFunctions";
 
 interface IItemCompanyProps {
   IPOData?: IIPOSchema;
@@ -49,7 +54,7 @@ const ItemCompanyList = ({ onClick, IPOData }: IItemCompanyProps) => {
             backgroundColor: "green",
             textTransform: "capitalize",
             color: "white",
-            fontSize: "18px",
+            // fontSize: "18px",
           }}
         >
           Listed
@@ -66,7 +71,7 @@ const ItemCompanyList = ({ onClick, IPOData }: IItemCompanyProps) => {
             backgroundColor: "orange",
             textTransform: "capitalize",
             color: "white",
-            fontSize: "18px",
+            // fontSize: "18px",
           }}
         >
           {`•`}
@@ -84,7 +89,7 @@ const ItemCompanyList = ({ onClick, IPOData }: IItemCompanyProps) => {
             backgroundColor: "red",
             textTransform: "capitalize",
             color: "white",
-            fontSize: "18px",
+            // fontSize: "18px",
           }}
         >
           {`•`}
@@ -92,7 +97,7 @@ const ItemCompanyList = ({ onClick, IPOData }: IItemCompanyProps) => {
         </span>
       );
     }
-    if (isPastDate(IPOData?.timeline?.open_date ?? "")) {
+    if (isPastOrSameDate(IPOData?.timeline?.open_date ?? "")) {
       return (
         <span
           style={{
@@ -102,7 +107,7 @@ const ItemCompanyList = ({ onClick, IPOData }: IItemCompanyProps) => {
             backgroundColor: "green",
             textTransform: "capitalize",
             color: "white",
-            fontSize: "18px",
+            // fontSize: "18px",
           }}
         >
           {`•`}
@@ -120,7 +125,7 @@ const ItemCompanyList = ({ onClick, IPOData }: IItemCompanyProps) => {
             backgroundColor: "purple",
             textTransform: "capitalize",
             color: "white",
-            fontSize: "18px",
+            // fontSize: "18px",
           }}
         >
           {`•`}
@@ -137,7 +142,7 @@ const ItemCompanyList = ({ onClick, IPOData }: IItemCompanyProps) => {
           backgroundColor: "green",
           textTransform: "capitalize",
           color: "white",
-          fontSize: "18px",
+          // fontSize: "18px",
         }}
       >
         {`•`}
@@ -178,7 +183,7 @@ const ItemCompanyList = ({ onClick, IPOData }: IItemCompanyProps) => {
         }}
       >
         <ImageCompWithLoader
-          img={IPOData?.logo}
+          img={IPOData?.company_logo}
           alt={"Company logo"}
           errorImage={imgDefaultCompany}
           style={{
@@ -199,7 +204,7 @@ const ItemCompanyList = ({ onClick, IPOData }: IItemCompanyProps) => {
           }}
         >
           <Typography
-            variant="h4"
+            variant="h6"
             sx={{ textTransform: "capitalize", mb: "2px" }}
           >
             {renderIPOStatus()}
@@ -208,7 +213,7 @@ const ItemCompanyList = ({ onClick, IPOData }: IItemCompanyProps) => {
             variant="h4"
             sx={{ textTransform: "capitalize", mb: "2px" }}
           >
-            {IPOData?.name}
+            {IPOData?.company_name}
           </TwoLineTypo>
           {renderOfferDateOrListedOnDate(IPOData?.timeline)}
         </CardContent>

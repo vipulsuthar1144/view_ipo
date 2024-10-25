@@ -7,6 +7,7 @@ import {
 import { deepmerge } from "@mui/utils";
 import React, { useMemo } from "react";
 import { getMUIPalette } from "./utils/getMUIPalette";
+import { getMuiInputBase } from "./utils/InputBase";
 
 interface IAppThemeProps {
   children?: React.ReactNode;

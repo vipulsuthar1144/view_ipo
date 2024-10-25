@@ -14,6 +14,7 @@ import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
 import AppColors from "@/theme/utils/AppColors";
 import { Save } from "@mui/icons-material";
+import { Box, TextField } from "@mui/material";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -42,6 +43,8 @@ export default function DialogUpdateCompanyData() {
       </Button>
       <Dialog
         fullScreen
+        fullWidth
+        disableScrollLock
         open={open}
         onClose={handleClose}
         TransitionComponent={Transition}
@@ -58,7 +61,7 @@ export default function DialogUpdateCompanyData() {
               color="primary"
               onClick={handleClose}
               aria-label="close"
-              sx={{ color: AppColors.btnOrangeColor }}
+              sx={{ color: AppColors.greenColor }}
             >
               <CloseIcon />
             </IconButton>
@@ -70,8 +73,8 @@ export default function DialogUpdateCompanyData() {
               startIcon={<Save />}
               sx={{
                 borderRadius: "50px",
-                color: AppColors.btnOrangeColor,
-                borderColor: AppColors.btnOrangeColor,
+                color: AppColors.greenColor,
+                borderColor: AppColors.greenColor,
               }}
               onClick={handleClose}
             >
@@ -79,6 +82,16 @@ export default function DialogUpdateCompanyData() {
             </Button>
           </Toolbar>
         </AppBar>
+        <Box sx={{ padding: "20px" }}>
+          <TextField
+            label="Company Name"
+            variant="outlined"
+            sx={{ color: "red" }}
+            error={true} // Triggers error styles
+            helperText={"fuck you"}
+            fullWidth
+          />
+        </Box>
       </Dialog>
     </React.Fragment>
   );

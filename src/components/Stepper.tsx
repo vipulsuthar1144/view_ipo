@@ -24,7 +24,7 @@ export const QontoConnector = styled(StepConnector)(({ theme }) => ({
     },
   },
   [`& .${stepConnectorClasses.line}`]: {
-    borderColor: AppColors.greenColor,
+    borderColor: AppColors.textSecondary,
     borderTopWidth: 3,
     borderRadius: 1,
   },

@@ -40,3 +40,10 @@ export const isPastDate = (dateToCompare?: string) => {
   if (!moment(dateToCompare).isValid()) return;
   return moment(dateToCompare).isBefore(moment().startOf("day"));
 };
+export const isPastOrSameDate = (dateToCompare?: string) => {
+  if (!moment(dateToCompare).isValid()) return;
+  return (
+    moment(dateToCompare).isBefore(moment().startOf("day")) ||
+    moment(dateToCompare).isSame(moment().startOf("day"))
+  );
+};

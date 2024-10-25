@@ -34,6 +34,7 @@ import {
   formatNumber,
   formatPrice,
   isPastDate,
+  isPastOrSameDate,
 } from "@utils/genaralFunctions";
 import useCompanyDetailsController from "./CompanyDetails.controller";
 import DialogUpdateCompanyData from "./DialogUpdateCompanyData";
@@ -137,7 +138,7 @@ const CompanyDetails = () => {
         </span>
       );
     }
-    if (isPastDate(IPOData?.timeline?.open_date ?? "")) {
+    if (isPastOrSameDate(IPOData?.timeline?.open_date ?? "")) {
       return (
         <span
           style={{
@@ -222,7 +223,7 @@ const CompanyDetails = () => {
           }}
         >
           <ImageCompWithLoader
-            img={IPOData.logo}
+            img={IPOData.company_logo}
             alt={"Company logo"}
             errorImage={imgDefaultCompany}
             style={{
@@ -238,7 +239,7 @@ const CompanyDetails = () => {
           />
           <Box sx={{ flex: 3, minWidth: "fit-content" }}>
             <Typography variant="h3" mb={"5px"}>
-              {IPOData.name}
+              {IPOData.company_name}
               {renderIPOStatus()}
             </Typography>
             {renderOfferDateOrListedOnDate(IPOData?.timeline)}
@@ -284,7 +285,9 @@ const CompanyDetails = () => {
 
     let activeStep = -1;
     stepperItems.forEach((item, index) => {
-      if (isPastDate(item.date ?? "")) {
+      if (index == 0 && isPastOrSameDate(item.date)) {
+        activeStep = index + 1;
+      } else if (isPastDate(item.date ?? "")) {
         activeStep = index + 1;
       }
     });
@@ -317,7 +320,7 @@ const CompanyDetails = () => {
           sx={{ flexDirection: "column", alignItems: "flex-start" }}
         >
           <Typography variant="h3" mb={"30px"}>
-            {IPOData?.name} Details
+            {IPOData?.company_name} Details
           </Typography>
           {renderStepper()}
           <Grid2 container p={"10px"} spacing={2} sx={{ width: "100%" }}>
@@ -483,7 +486,7 @@ const CompanyDetails = () => {
           sx={{ flexDirection: "column", alignItems: "flex-start" }}
         >
           <Typography variant="h3">
-            {IPOData?.name} Application Details
+            {IPOData?.company_name} Application Details
           </Typography>
           <TableContainer component={Paper}>
             <Table aria-label="simple table">
@@ -564,7 +567,7 @@ const CompanyDetails = () => {
           sx={{ flexDirection: "column", alignItems: "flex-start" }}
         >
           <Typography variant="h3">
-            {IPOData?.name} Subscription Details
+            {IPOData?.company_name} Subscription Details
           </Typography>
           <TableContainer component={Paper}>
             <Table aria-label="simple table">
@@ -652,8 +655,8 @@ const CompanyDetails = () => {
 
   const renderCompanyFinancials = () => {
     if (
-      !IPOData?.company?.financials ||
-      IPOData?.company?.financials?.length == 0
+      !IPOData?.company_financials ||
+      IPOData?.company_financials?.length == 0
     )
       return;
     return (
@@ -664,7 +667,7 @@ const CompanyDetails = () => {
           sx={{ flexDirection: "column", alignItems: "flex-start" }}
         >
           <Typography variant="h3">
-            {IPOData?.name} Company Financials{" "}
+            {IPOData?.company_name} Company Financials{" "}
             <span style={{ color: AppColors.textSecondary, fontSize: "18px" }}>
               All values are in ₹ Cr.
             </span>
@@ -688,7 +691,7 @@ const CompanyDetails = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {IPOData?.company?.financials?.map((item, index) => (
+                {IPOData?.company_financials?.map((item, index) => (
                   <TableRow
                     key={index}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -745,7 +748,9 @@ const CompanyDetails = () => {
           className={classes.container}
           sx={{ flexDirection: "column", alignItems: "flex-start" }}
         >
-          <Typography variant="h3">{IPOData?.name} Valuations</Typography>
+          <Typography variant="h3">
+            {IPOData?.company_name} Valuations
+          </Typography>
           <Grid2 container p={"10px"} spacing={2} sx={{ width: "100%" }}>
             <Grid2 size={{ xs: 12, md: 6 }}>
               <Typography
@@ -831,7 +836,7 @@ const CompanyDetails = () => {
     );
   };
   const renderAboutTheCompany = () => {
-    if (!IPOData?.company?.about || IPOData?.company?.about == "") return;
+    if (!IPOData?.company_about || IPOData?.company_about == "") return;
     return (
       <>
         <Box
@@ -841,7 +846,7 @@ const CompanyDetails = () => {
         >
           <Typography variant="h3"> About the Company </Typography>
           <Typography variant="h6" sx={{ color: AppColors.textSecondary }}>
-            {IPOData?.company?.about}
+            {IPOData?.company_about}
           </Typography>
         </Box>
       </>
@@ -850,9 +855,9 @@ const CompanyDetails = () => {
 
   const renderCompanyStrength = () => {
     if (
-      (!IPOData?.company?.strengths && !IPOData?.company?.weaknesses) ||
-      (IPOData?.company?.strengths?.length == 0 &&
-        IPOData?.company?.weaknesses?.length == 0)
+      (!IPOData?.company_strengths && !IPOData?.company_weaknesses) ||
+      (IPOData?.company_strengths?.length == 0 &&
+        IPOData?.company_weaknesses?.length == 0)
     )
       return;
     return (
@@ -864,16 +869,16 @@ const CompanyDetails = () => {
         >
           <Typography variant="h3">
             {" "}
-            {IPOData?.name} - Strength and Weakness
+            {IPOData?.company_name} - Strength and Weakness
           </Typography>
 
           <Grid2 container spacing={2}>
-            {IPOData?.company?.strengths &&
-              IPOData?.company?.strengths.length > 0 && (
+            {IPOData?.company_strengths &&
+              IPOData?.company_strengths.length > 0 && (
                 <Grid2 size={{ xs: 12, md: 6 }}>
                   <Typography variant="h5">Strength</Typography>
                   <List>
-                    {IPOData?.company?.strengths?.map((item, index) => (
+                    {IPOData?.company_strengths?.map((item, index) => (
                       <ListItem key={index}>
                         <ThumbUpOutlined color="success" sx={{ mr: "10px" }} />
 
@@ -883,12 +888,12 @@ const CompanyDetails = () => {
                   </List>
                 </Grid2>
               )}
-            {IPOData?.company?.weaknesses &&
-              IPOData?.company?.weaknesses.length > 0 && (
+            {IPOData?.company_weaknesses &&
+              IPOData?.company_weaknesses.length > 0 && (
                 <Grid2 size={{ xs: 12, md: 6 }}>
                   <Typography variant="h5">Weakness</Typography>
                   <List>
-                    {IPOData?.company?.weaknesses?.map((item, index) => (
+                    {IPOData?.company_weaknesses?.map((item, index) => (
                       <ListItem key={index}>
                         <ThumbDownAltOutlined
                           color="error"
@@ -924,30 +929,30 @@ const CompanyDetails = () => {
               >
                 Company Contact Details
               </Typography>
-              <Typography variant="h5">{IPOData?.name}</Typography>
+              <Typography variant="h5">{IPOData?.company_name}</Typography>
               <Typography variant="h6">
                 <span style={{ color: AppColors.textSecondary }}>
                   Address :
                 </span>
-                {IPOData?.company?.contact_info?.address}
+                {IPOData?.company_contact_info?.address}
               </Typography>
               <Typography variant="h6">
                 <span style={{ color: AppColors.textSecondary }}>Phone : </span>
-                {IPOData?.company?.contact_info?.phone}
+                {IPOData?.company_contact_info?.phone}
               </Typography>
               <Typography variant="h6">
                 <span style={{ color: AppColors.textSecondary }}>Email : </span>
-                {IPOData?.company?.contact_info?.email}
+                {IPOData?.company_contact_info?.email}
               </Typography>
               <Typography variant="h6">
                 <span style={{ color: AppColors.textSecondary }}>
                   WebSite :
                 </span>
                 <a
-                  href={IPOData?.company?.contact_info?.website}
+                  href={IPOData?.company_contact_info?.website}
                   target="_blank"
                 >
-                  {IPOData?.company?.contact_info?.website}
+                  {IPOData?.company_contact_info?.website}
                 </a>
               </Typography>
             </Grid2>
@@ -993,7 +998,7 @@ const CompanyDetails = () => {
           sx={{ flexDirection: "column", alignItems: "flex-start" }}
         >
           <Typography variant="h3">
-            {IPOData?.name} - Issue Objectives
+            {IPOData?.company_name} - Issue Objectives
           </Typography>
           <List>
             {IPOData?.issue_objectives?.map((item, index) => (
@@ -1008,10 +1013,7 @@ const CompanyDetails = () => {
     );
   };
   const renderCompanyPromoters = () => {
-    if (
-      !IPOData?.company?.promoters ||
-      IPOData?.company?.promoters.length === 0
-    )
+    if (!IPOData?.company_promoters || IPOData?.company_promoters.length === 0)
       return;
     return (
       <>
@@ -1020,9 +1022,11 @@ const CompanyDetails = () => {
           className={classes.container}
           sx={{ flexDirection: "column", alignItems: "flex-start" }}
         >
-          <Typography variant="h3">{IPOData?.name} Promoter(s)</Typography>
+          <Typography variant="h3">
+            {IPOData?.company_name} Promoter(s)
+          </Typography>
           <List>
-            {IPOData?.company?.promoters?.map((item, index) => (
+            {IPOData?.company_promoters?.map((item, index) => (
               <ListItem key={index}>
                 <CircleRounded sx={{ fontSize: "10px", mr: "10px" }} />
                 <Typography variant="h6">{`${item}`}.</Typography>
@@ -1035,8 +1039,8 @@ const CompanyDetails = () => {
   };
   return (
     <RootContainer style={{ alignItems: "center", gap: "30px" }}>
-      {renderCompanyData()}
       {/* <DialogUpdateCompanyData /> */}
+      {renderCompanyData()}
     </RootContainer>
   );
 };

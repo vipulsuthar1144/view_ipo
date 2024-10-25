@@ -1,5 +1,4 @@
 import { db } from "@/config/firebase.config";
-import { ICompanySchema } from "@/schema/company.schema";
 import { IIPOSchema } from "@/schema/ipo.schema";
 import { convertToISODate } from "@utils/genaralFunctions";
 import {
@@ -23,7 +22,7 @@ export const fetchCompaniesListAPI = async ({
   lastVisible?: string | null;
 }) => {
   try {
-    const companyCollection = collection(db, "ipos");
+    const companyCollection = collection(db, "new_ipos");
     let queryParams;
     if (lastVisible) {
       queryParams = query(
@@ -99,7 +98,7 @@ export const fetchCompaniesListAPI = async ({
 
 export const fetchCompanyIPOByIdAPI = async (companyId: string) => {
   try {
-    const companyRef = doc(db, "ipos", companyId);
+    const companyRef = doc(db, "new_ipos", companyId);
     const snapshot = await getDoc(companyRef);
     if (!snapshot.exists()) {
       console.log("Document does not exist!");

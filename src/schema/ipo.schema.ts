@@ -1,34 +1,37 @@
-import { ICompanySchema } from "./company.schema";
-
 export interface IIPOSchema {
   id?: string;
-  company_id?: string;
-  company?: ICompanySchema;
+  company_name?: string;
+  company_logo?: string;
+  slug?: string;
+  company_about?: string;
+  company_contact_info?: IContactInfo;
+  company_promoters?: string[];
+  company_strengths?: string[];
+  company_weaknesses?: string[];
+  company_financials?: IFinancial[];
   disclaimer?: string;
   face_value?: number;
-  lot_size?: number;
-  lead_managers?: string[];
-  issue_objectives?: string[];
-  type?: string;
-  category?: string;
-  status?: string;
-  name?: string;
-  logo?: string;
-  listing_at?: string[];
-  created_at?: string;
-  updated_at?: string;
   issue_price?: IIssuePrice;
   issue_size?: IIssueSize;
+  lot_size?: number;
   timeline?: ITimeline;
   quota?: IQuota;
   applications?: IApplications;
   registrar?: IRegistrar;
   docs?: IDocs;
   valuations?: IValuations;
+  subscription_rate?: number;
   subscriptions?: ISubscription[];
   lot_sizes?: ILotSize[];
+  lead_managers?: string[];
+  issue_objectives?: string[];
+  type?: string;
+  category?: string;
+  status?: string;
+  listing_at?: string[];
   listing_price?: any;
-  subscription_rate?: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface IIssuePrice {
@@ -110,4 +113,23 @@ export interface ILotSize {
   lot?: number;
   shares?: number;
   amount?: number;
+}
+
+export interface IContactInfo {
+  address: string;
+  phone: string;
+  email: string;
+  website: string;
+}
+
+export interface IFinancial {
+  period: string;
+  revenue: number;
+  assets: number;
+  profit: number;
+}
+
+export interface ITimeStamps {
+  seconds: number;
+  nanoseconds: number;
 }

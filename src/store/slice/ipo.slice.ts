@@ -1,4 +1,3 @@
-import { ICompanySchema } from "@/schema/company.schema";
 import {
   fetchCompaniesList,
   fetchCompanyIPObyId,
