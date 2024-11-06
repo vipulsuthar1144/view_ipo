@@ -5,13 +5,11 @@ import FallbackError from "@components/FallbackError";
 import { QontoConnector, QontoStepIcon } from "@components/Stepper";
 import { ImageCompWithLoader } from "@components/design/Image";
 import { RootContainer } from "@components/design/styledComponents";
+import { CircleRounded, DeleteForever, Edit, ThumbDownAltOutlined, ThumbUpOutlined } from "@mui/icons-material";
 import {
-  CircleRounded,
-  ThumbDownAltOutlined,
-  ThumbUpOutlined,
-} from "@mui/icons-material";
-import {
+  Backdrop,
   Box,
+  Button,
   CircularProgress,
   Grid2,
   List,
@@ -29,18 +27,12 @@ import {
   Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import {
-  formatDate,
-  formatNumber,
-  formatPrice,
-  isPastDate,
-  isPastOrSameDate,
-} from "@utils/genaralFunctions";
+import { formatDate, formatNumber, formatPrice, isPastDate, isPastOrSameDate } from "@utils/genaralFunctions";
 import useCompanyDetailsController from "./CompanyDetails.controller";
 import DialogUpdateCompanyData from "./DialogUpdateCompanyData";
 const CompanyDetails = () => {
   const classes = useStyles();
-  const { isIPODataError, isIPODataLoading, IPOData } =
+  const { isIPODataError, isIPODataLoading, IPOData, isCRUDIPOLoading, handleDeleteIPObyId, listenerGoToUpdateScreen } =
     useCompanyDetailsController();
 
   const renderRetailMinSharesAndAmount = (lots: ILotSize[]) => {
@@ -58,10 +50,8 @@ const CompanyDetails = () => {
     }
     return (
       <Typography variant="h6" color={AppColors.textSecondary}>
-        <span style={{ color: AppColors.greenColor, fontSize: "25px" }}>
-          ₹ {formatNumber(retailMinAmount)}
-        </span>
-        / {retailMinShares} Shares
+        <span style={{ color: AppColors.greenColor, fontSize: "25px" }}>₹ {formatNumber(retailMinAmount)}</span>/{" "}
+        {retailMinShares} Shares
       </Typography>
     );
   };
@@ -71,15 +61,13 @@ const CompanyDetails = () => {
     if (isPastDate(timeLine?.listing_date)) {
       return (
         <Typography variant="h6" color={AppColors.textSecondary}>
-          Listed On : {formatDate(timeLine.listing_date)} at{" "}
-          {formatPrice(IPOData?.listing_price)}
+          Listed On : {formatDate(timeLine.listing_date)} at {formatPrice(IPOData?.listing_price)}
         </Typography>
       );
     }
     return (
       <Typography variant="h6" color={AppColors.textSecondary}>
-        Offer Date : {formatDate(timeLine.open_date)} -{" "}
-        {formatDate(timeLine.end_date)}
+        Offer Date : {formatDate(timeLine.open_date)} - {formatDate(timeLine.end_date)}
       </Typography>
     );
   };
@@ -195,21 +183,22 @@ const CompanyDetails = () => {
   const renderCompanyData = () => {
     if (isIPODataLoading)
       return (
-        <CircularProgress
-          size={40}
-          thickness={5}
-          sx={{ color: "loader.main", alignSelf: "center", margin: "auto" }}
-        />
+        <CircularProgress size={40} thickness={5} sx={{ color: "loader.main", alignSelf: "center", margin: "auto" }} />
       );
 
     if (isIPODataError) return <FallbackError type="something_went_wrong" />;
-    if (!IPOData)
-      return (
-        <FallbackError type="data_not_found" message="No Company IPO Found" />
-      );
+    if (!IPOData) return <FallbackError type="data_not_found" message="No Company IPO Found" />;
 
     return (
       <>
+        <Backdrop sx={{ color: "#fff", zIndex: 11 }} open={isCRUDIPOLoading}>
+          <CircularProgress
+            size={40}
+            thickness={5}
+            sx={{ color: "loader.main", alignSelf: "center", margin: "auto" }}
+          />
+        </Backdrop>
+
         <Box
           component={"div"}
           className={classes.container}
@@ -244,7 +233,42 @@ const CompanyDetails = () => {
             </Typography>
             {renderOfferDateOrListedOnDate(IPOData?.timeline)}
           </Box>
-          <Box sx={{ flex: 1, minWidth: "fit-content" }}>
+
+          <Box
+            sx={{
+              flex: 1,
+              minWidth: "fit-content",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-end",
+            }}
+          >
+            {/* <DialogUpdateCompanyData ipoData={IPOData} /> */}
+            <Button
+              variant="outlined"
+              startIcon={<Edit />}
+              sx={{
+                borderRadius: "50px",
+                color: AppColors.greenColor,
+                borderColor: AppColors.greenColor,
+              }}
+              onClick={listenerGoToUpdateScreen}
+            >
+              Update
+            </Button>
+            <Button
+              variant="outlined"
+              startIcon={<DeleteForever />}
+              sx={{
+                borderRadius: "50px",
+                color: "error.main",
+                borderColor: "error.main",
+                marginTop: "10px",
+              }}
+              onClick={handleDeleteIPObyId}
+            >
+              Delete
+            </Button>
             {renderRetailMinSharesAndAmount(IPOData?.lot_sizes ?? [])}
           </Box>
         </Box>
@@ -293,12 +317,7 @@ const CompanyDetails = () => {
     });
 
     return (
-      <Stepper
-        activeStep={activeStep}
-        alternativeLabel
-        connector={<QontoConnector />}
-        sx={{ width: "100%" }}
-      >
+      <Stepper activeStep={activeStep} alternativeLabel connector={<QontoConnector />} sx={{ width: "100%" }}>
         {stepperItems.map((item, index) => (
           <Step key={index}>
             <StepLabel StepIconComponent={QontoStepIcon}>
@@ -314,69 +333,44 @@ const CompanyDetails = () => {
   const renderIPODetails = () => {
     return (
       <>
-        <Box
-          component={"div"}
-          className={classes.container}
-          sx={{ flexDirection: "column", alignItems: "flex-start" }}
-        >
+        <Box component={"div"} className={classes.container} sx={{ flexDirection: "column", alignItems: "flex-start" }}>
           <Typography variant="h3" mb={"30px"}>
-            {IPOData?.company_name} Details
+            {IPOData?.company_name} IPO Details
           </Typography>
           {renderStepper()}
           <Grid2 container p={"10px"} spacing={2} sx={{ width: "100%" }}>
             <Grid2 size={{ xs: 12, md: 6 }}>
-              <Typography
-                variant="subtitle1"
-                sx={{ color: AppColors.textSecondary }}
-              >
+              <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
                 IssuePrice
               </Typography>
               <Typography variant="h6">
-                {`₹${formatNumber(IPOData?.issue_price?.min)}-${formatNumber(IPOData?.issue_price?.max)}`}{" "}
-                per Equity Share
+                {`₹${formatNumber(IPOData?.issue_price?.min)}-${formatNumber(IPOData?.issue_price?.max)}`} per Equity
+                Share
               </Typography>
             </Grid2>
 
             <Grid2 size={{ xs: 12, md: 6 }}>
-              <Typography
-                variant="subtitle1"
-                sx={{ color: AppColors.textSecondary }}
-              >
+              <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
                 Face Value
               </Typography>
-              <Typography variant="h6">
-                {`₹${formatNumber(IPOData?.face_value)} `}Per Equity Share
-              </Typography>
+              <Typography variant="h6">{`₹${formatNumber(IPOData?.face_value)} `}Per Equity Share</Typography>
             </Grid2>
             <Grid2 size={{ xs: 12, md: 6 }}>
-              <Typography
-                variant="subtitle1"
-                sx={{ color: AppColors.textSecondary }}
-              >
+              <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
                 Listing Of Group
               </Typography>
               <Typography variant="h6">
-                {IPOData?.listing_at?.map((item, index) => (
-                  <span key={index}> {item} </span>
-                ))}
+                {IPOData?.listing_at?.map((item, index) => <span key={index}> {item} </span>)}
               </Typography>
             </Grid2>
             <Grid2 size={{ xs: 12, md: 6 }}>
-              <Typography
-                variant="subtitle1"
-                sx={{ color: AppColors.textSecondary }}
-              >
+              <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
                 Registrar
               </Typography>
-              <Typography variant="h6">
-                {IPOData?.registrar?.name ?? "-"}
-              </Typography>
+              <Typography variant="h6">{IPOData?.registrar?.name ?? "-"}</Typography>
             </Grid2>
             <Grid2 size={{ xs: 12, md: 6 }}>
-              <Typography
-                variant="subtitle1"
-                sx={{ color: AppColors.textSecondary }}
-              >
+              <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
                 Market Lot
               </Typography>
 
@@ -384,30 +378,24 @@ const CompanyDetails = () => {
                 <Box key={index}>
                   {item.application === "retail_min" && (
                     <Typography variant="h6">
-                      Retail:{" "}
-                      {`${formatNumber(item.shares)} Shares (${formatPrice(item.amount)})`}
+                      Retail: {`${formatNumber(item.shares)} Shares (${formatPrice(item.amount)})`}
                     </Typography>
                   )}
                   {item.application === "s_nii_min" && (
                     <Typography variant="h6">
-                      S-HNI:{" "}
-                      {`${formatNumber(item.shares)} Shares (${formatPrice(item.amount)})`}
+                      S-HNI: {`${formatNumber(item.shares)} Shares (${formatPrice(item.amount)})`}
                     </Typography>
                   )}
                   {item.application === "b_nii_min" && (
                     <Typography variant="h6">
-                      B-HNI:{" "}
-                      {`${formatNumber(item.shares)} Shares (${formatPrice(item.amount)})`}
+                      B-HNI: {`${formatNumber(item.shares)} Shares (${formatPrice(item.amount)})`}
                     </Typography>
                   )}
                 </Box>
               ))}
             </Grid2>
             <Grid2 size={{ xs: 12, md: 6 }}>
-              <Typography
-                variant="subtitle1"
-                sx={{ color: AppColors.textSecondary }}
-              >
+              <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
                 Lead Manager
               </Typography>
               {IPOData?.lead_managers?.map((item, index) => (
@@ -417,10 +405,7 @@ const CompanyDetails = () => {
               ))}
             </Grid2>
             <Grid2 size={{ xs: 12, md: 6 }}>
-              <Typography
-                variant="subtitle1"
-                sx={{ color: AppColors.textSecondary }}
-              >
+              <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
                 Issue Size
               </Typography>
               <Typography variant="h6">{`Total : ${formatPrice(IPOData?.issue_size?.total)} Cr.`}</Typography>
@@ -428,10 +413,7 @@ const CompanyDetails = () => {
               <Typography variant="h6">{`#OFS : ${formatPrice(IPOData?.issue_size?.offer_for_sale)} Cr.`}</Typography>
             </Grid2>
             <Grid2 size={{ xs: 12, md: 6 }}>
-              <Typography
-                variant="subtitle1"
-                sx={{ color: AppColors.textSecondary }}
-              >
+              <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
                 Retail Portion
               </Typography>
               <Typography variant="h6">{`Retails : ${formatNumber(IPOData?.quota?.retail)}%`}</Typography>
@@ -440,19 +422,13 @@ const CompanyDetails = () => {
               <Typography variant="h6">{`sNII : ${formatNumber(IPOData?.quota?.nii?.s_nii)}%`}</Typography>
             </Grid2>
             <Grid2 size={{ xs: 12, md: 6 }}>
-              <Typography
-                variant="subtitle1"
-                sx={{ color: AppColors.textSecondary }}
-              >
+              <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
                 Subscription
               </Typography>
               <Typography variant="h6">{`${formatNumber(IPOData?.subscription_rate)} times`}</Typography>
             </Grid2>
             <Grid2 size={{ xs: 12, md: 6 }}>
-              <Typography
-                variant="subtitle1"
-                sx={{ color: AppColors.textSecondary }}
-              >
+              <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
                 IPO Docs
               </Typography>
 
@@ -480,14 +456,8 @@ const CompanyDetails = () => {
     if (!IPOData?.applications) return;
     return (
       <>
-        <Box
-          component={"div"}
-          className={classes.container}
-          sx={{ flexDirection: "column", alignItems: "flex-start" }}
-        >
-          <Typography variant="h3">
-            {IPOData?.company_name} Application Details
-          </Typography>
+        <Box component={"div"} className={classes.container} sx={{ flexDirection: "column", alignItems: "flex-start" }}>
+          <Typography variant="h3">{IPOData?.company_name} IPO Application Details</Typography>
           <TableContainer component={Paper}>
             <Table aria-label="simple table">
               <TableHead>
@@ -508,44 +478,27 @@ const CompanyDetails = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                <TableRow
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
+                <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                   <TableCell>
-                    <Typography
-                      variant="h6"
-                      sx={{ color: AppColors.textSecondary }}
-                    >
+                    <Typography variant="h6" sx={{ color: AppColors.textSecondary }}>
                       {formatNumber(IPOData?.applications?.qib)}
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography
-                      variant="h6"
-                      sx={{ color: AppColors.textSecondary }}
-                    >
+                    <Typography variant="h6" sx={{ color: AppColors.textSecondary }}>
                       {formatNumber(IPOData?.applications?.nii?.total)}
                     </Typography>
-                    <Typography
-                      variant="subtitle1"
-                      sx={{ color: AppColors.textSecondary }}
-                    >
+                    <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
                       {`${formatNumber(IPOData?.applications?.nii?.b_nii)} / ${formatNumber(IPOData?.applications?.nii?.s_nii)}`}
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography
-                      variant="h6"
-                      sx={{ color: AppColors.textSecondary }}
-                    >
+                    <Typography variant="h6" sx={{ color: AppColors.textSecondary }}>
                       {formatNumber(IPOData?.applications?.retail)}
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography
-                      variant="h6"
-                      sx={{ color: AppColors.textSecondary }}
-                    >
+                    <Typography variant="h6" sx={{ color: AppColors.textSecondary }}>
                       {formatNumber(IPOData?.applications?.total)}
                     </Typography>
                   </TableCell>
@@ -561,14 +514,8 @@ const CompanyDetails = () => {
     if (!IPOData?.subscriptions || IPOData?.subscriptions.length === 0) return;
     return (
       <>
-        <Box
-          component={"div"}
-          className={classes.container}
-          sx={{ flexDirection: "column", alignItems: "flex-start" }}
-        >
-          <Typography variant="h3">
-            {IPOData?.company_name} Subscription Details
-          </Typography>
+        <Box component={"div"} className={classes.container} sx={{ flexDirection: "column", alignItems: "flex-start" }}>
+          <Typography variant="h3">{IPOData?.company_name} IPO Subscription Details</Typography>
           <TableContainer component={Paper}>
             <Table aria-label="simple table">
               <TableHead>
@@ -593,53 +540,32 @@ const CompanyDetails = () => {
               </TableHead>
               <TableBody>
                 {IPOData?.subscriptions?.map((item, index) => (
-                  <TableRow
-                    key={index}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
+                  <TableRow key={index} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                     <TableCell component="th" scope="row">
-                      <Typography
-                        variant="h6"
-                        sx={{ color: AppColors.textSecondary }}
-                      >
+                      <Typography variant="h6" sx={{ color: AppColors.textSecondary }}>
                         {formatDate(item.date)}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography
-                        variant="h6"
-                        sx={{ color: AppColors.textSecondary }}
-                      >
+                      <Typography variant="h6" sx={{ color: AppColors.textSecondary }}>
                         {formatNumber(item.qib)} x
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography
-                        variant="h6"
-                        sx={{ color: AppColors.textSecondary }}
-                      >
+                      <Typography variant="h6" sx={{ color: AppColors.textSecondary }}>
                         {formatNumber(item.nii?.total)} x
                       </Typography>
-                      <Typography
-                        variant="subtitle1"
-                        sx={{ color: AppColors.textSecondary }}
-                      >
+                      <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
                         {`${formatNumber(item.nii?.b_nii)} x  / ${formatNumber(item.nii?.s_nii)} x`}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography
-                        variant="h6"
-                        sx={{ color: AppColors.textSecondary }}
-                      >
+                      <Typography variant="h6" sx={{ color: AppColors.textSecondary }}>
                         {formatNumber(item.retail)} x
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography
-                        variant="h6"
-                        sx={{ color: AppColors.textSecondary }}
-                      >
+                      <Typography variant="h6" sx={{ color: AppColors.textSecondary }}>
                         {formatNumber(item.total)} x
                       </Typography>
                     </TableCell>
@@ -654,23 +580,13 @@ const CompanyDetails = () => {
   };
 
   const renderCompanyFinancials = () => {
-    if (
-      !IPOData?.company_financials ||
-      IPOData?.company_financials?.length == 0
-    )
-      return;
+    if (!IPOData?.company_financials || IPOData?.company_financials?.length == 0) return;
     return (
       <>
-        <Box
-          component={"div"}
-          className={classes.container}
-          sx={{ flexDirection: "column", alignItems: "flex-start" }}
-        >
+        <Box component={"div"} className={classes.container} sx={{ flexDirection: "column", alignItems: "flex-start" }}>
           <Typography variant="h3">
             {IPOData?.company_name} Company Financials{" "}
-            <span style={{ color: AppColors.textSecondary, fontSize: "18px" }}>
-              All values are in ₹ Cr.
-            </span>
+            <span style={{ color: AppColors.textSecondary, fontSize: "18px" }}>All values are in ₹ Cr.</span>
           </Typography>
           <TableContainer component={Paper}>
             <Table aria-label="simple table">
@@ -692,40 +608,25 @@ const CompanyDetails = () => {
               </TableHead>
               <TableBody>
                 {IPOData?.company_financials?.map((item, index) => (
-                  <TableRow
-                    key={index}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
+                  <TableRow key={index} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                     <TableCell component="th" scope="row">
-                      <Typography
-                        variant="h6"
-                        sx={{ color: AppColors.textSecondary }}
-                      >
+                      <Typography variant="h6" sx={{ color: AppColors.textSecondary }}>
                         {formatDate(item.period)}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography
-                        variant="h6"
-                        sx={{ color: AppColors.textSecondary }}
-                      >
+                      <Typography variant="h6" sx={{ color: AppColors.textSecondary }}>
                         {formatNumber(item.assets)}
                       </Typography>
                     </TableCell>
 
                     <TableCell>
-                      <Typography
-                        variant="h6"
-                        sx={{ color: AppColors.textSecondary }}
-                      >
+                      <Typography variant="h6" sx={{ color: AppColors.textSecondary }}>
                         {formatNumber(item.revenue)}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography
-                        variant="h6"
-                        sx={{ color: AppColors.textSecondary }}
-                      >
+                      <Typography variant="h6" sx={{ color: AppColors.textSecondary }}>
                         {formatNumber(item.profit)}
                       </Typography>
                     </TableCell>
@@ -743,111 +644,41 @@ const CompanyDetails = () => {
     if (!IPOData?.valuations) return;
     return (
       <>
-        <Box
-          component={"div"}
-          className={classes.container}
-          sx={{ flexDirection: "column", alignItems: "flex-start" }}
-        >
-          <Typography variant="h3">
-            {IPOData?.company_name} Valuations
-          </Typography>
+        <Box component={"div"} className={classes.container} sx={{ flexDirection: "column", alignItems: "flex-start" }}>
+          <Typography variant="h3">{IPOData?.company_name} Valuations</Typography>
           <Grid2 container p={"10px"} spacing={2} sx={{ width: "100%" }}>
             <Grid2 size={{ xs: 12, md: 6 }}>
-              <Typography
-                variant="subtitle1"
-                sx={{ color: AppColors.textSecondary }}
-              >
+              <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
                 EPS Pre IPO
               </Typography>
-              <Typography variant="h6">
-                {formatNumber(IPOData?.valuations?.earning_per_share?.pre_ipo)}
-              </Typography>
+              <Typography variant="h6">{formatNumber(IPOData?.valuations?.earning_per_share?.pre_ipo)}</Typography>
             </Grid2>
 
             <Grid2 size={{ xs: 12, md: 6 }}>
-              <Typography
-                variant="subtitle1"
-                sx={{ color: AppColors.textSecondary }}
-              >
+              <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
                 EPS Post IPO
               </Typography>
-              <Typography variant="h6">
-                {formatNumber(IPOData?.valuations?.earning_per_share?.post_ipo)}
-              </Typography>
+              <Typography variant="h6">{formatNumber(IPOData?.valuations?.earning_per_share?.post_ipo)}</Typography>
             </Grid2>
             <Grid2 size={{ xs: 12, md: 6 }}>
-              <Typography
-                variant="subtitle1"
-                sx={{ color: AppColors.textSecondary }}
-              >
+              <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
                 P/E Pre IPO
               </Typography>
-              <Typography variant="h6">
-                {formatNumber(
-                  IPOData?.valuations?.price_earning_ratio?.pre_ipo
-                )}
-              </Typography>
+              <Typography variant="h6">{formatNumber(IPOData?.valuations?.price_earning_ratio?.pre_ipo)}</Typography>
             </Grid2>
             <Grid2 size={{ xs: 12, md: 6 }}>
-              <Typography
-                variant="subtitle1"
-                sx={{ color: AppColors.textSecondary }}
-              >
+              <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
                 P/E Post IPO
               </Typography>
-              <Typography variant="h6">
-                {formatNumber(
-                  IPOData?.valuations?.price_earning_ratio?.post_ipo
-                )}
-              </Typography>
+              <Typography variant="h6">{formatNumber(IPOData?.valuations?.price_earning_ratio?.post_ipo)}</Typography>
             </Grid2>
             <Grid2 size={{ xs: 12, md: 6 }}>
-              <Typography
-                variant="subtitle1"
-                sx={{ color: AppColors.textSecondary }}
-              >
+              <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
                 RoNW
               </Typography>
-              <Typography variant="h6">
-                {formatNumber(IPOData?.valuations?.return_on_net_worth)} %
-              </Typography>
+              <Typography variant="h6">{formatNumber(IPOData?.valuations?.return_on_net_worth)} %</Typography>
             </Grid2>
           </Grid2>
-        </Box>
-      </>
-    );
-  };
-
-  const renderCompanyDisclaimer = () => {
-    if (!IPOData?.disclaimer || IPOData.disclaimer == "") return;
-    return (
-      <>
-        <Box
-          component={"div"}
-          className={classes.container}
-          sx={{ flexDirection: "column", alignItems: "flex-start" }}
-        >
-          <Typography variant="h3">Disclaimer</Typography>
-          <Typography variant="h6" sx={{ color: AppColors.textSecondary }}>
-            {IPOData?.disclaimer}
-          </Typography>
-        </Box>
-      </>
-    );
-  };
-  const renderAboutTheCompany = () => {
-    if (!IPOData?.company_about || IPOData?.company_about == "") return;
-    return (
-      <>
-        <Box
-          component={"div"}
-          className={classes.container}
-          sx={{ flexDirection: "column", alignItems: "flex-start" }}
-        >
-          <Typography variant="h3"> About the Company </Typography>
-          <Typography variant="h6" sx={{ color: AppColors.textSecondary }}>
-            {IPOData?.company_about}
-          </Typography>
         </Box>
       </>
     );
@@ -856,55 +687,42 @@ const CompanyDetails = () => {
   const renderCompanyStrength = () => {
     if (
       (!IPOData?.company_strengths && !IPOData?.company_weaknesses) ||
-      (IPOData?.company_strengths?.length == 0 &&
-        IPOData?.company_weaknesses?.length == 0)
+      (IPOData?.company_strengths?.length == 0 && IPOData?.company_weaknesses?.length == 0)
     )
       return;
     return (
       <>
-        <Box
-          component={"div"}
-          className={classes.container}
-          sx={{ flexDirection: "column", alignItems: "flex-start" }}
-        >
-          <Typography variant="h3">
-            {" "}
-            {IPOData?.company_name} - Strength and Weakness
-          </Typography>
+        <Box component={"div"} className={classes.container} sx={{ flexDirection: "column", alignItems: "flex-start" }}>
+          <Typography variant="h3"> {IPOData?.company_name} - Strength and Weakness</Typography>
 
-          <Grid2 container spacing={2}>
-            {IPOData?.company_strengths &&
-              IPOData?.company_strengths.length > 0 && (
-                <Grid2 size={{ xs: 12, md: 6 }}>
-                  <Typography variant="h5">Strength</Typography>
-                  <List>
-                    {IPOData?.company_strengths?.map((item, index) => (
-                      <ListItem key={index}>
-                        <ThumbUpOutlined color="success" sx={{ mr: "10px" }} />
+          <Grid2 container spacing={2} width={"100%"}>
+            {IPOData?.company_strengths && IPOData?.company_strengths.length > 0 && (
+              <Grid2 size={{ xs: 12, md: 6 }}>
+                <Typography variant="h5">Strength</Typography>
+                <List>
+                  {IPOData?.company_strengths?.map((item, index) => (
+                    <ListItem key={index}>
+                      <ThumbUpOutlined color="success" sx={{ mr: "10px" }} />
 
-                        <Typography variant="h6">{item}.</Typography>
-                      </ListItem>
-                    ))}
-                  </List>
-                </Grid2>
-              )}
-            {IPOData?.company_weaknesses &&
-              IPOData?.company_weaknesses.length > 0 && (
-                <Grid2 size={{ xs: 12, md: 6 }}>
-                  <Typography variant="h5">Weakness</Typography>
-                  <List>
-                    {IPOData?.company_weaknesses?.map((item, index) => (
-                      <ListItem key={index}>
-                        <ThumbDownAltOutlined
-                          color="error"
-                          sx={{ mr: "10px" }}
-                        />
-                        <Typography variant="h6">{item}.</Typography>
-                      </ListItem>
-                    ))}
-                  </List>
-                </Grid2>
-              )}
+                      <Typography variant="h6">{item}.</Typography>
+                    </ListItem>
+                  ))}
+                </List>
+              </Grid2>
+            )}
+            {IPOData?.company_weaknesses && IPOData?.company_weaknesses.length > 0 && (
+              <Grid2 size={{ xs: 12, md: 6 }}>
+                <Typography variant="h5">Weakness</Typography>
+                <List>
+                  {IPOData?.company_weaknesses?.map((item, index) => (
+                    <ListItem key={index}>
+                      <ThumbDownAltOutlined color="error" sx={{ mr: "10px" }} />
+                      <Typography variant="h6">{item}.</Typography>
+                    </ListItem>
+                  ))}
+                </List>
+              </Grid2>
+            )}
           </Grid2>
         </Box>
       </>
@@ -914,26 +732,17 @@ const CompanyDetails = () => {
   const renderCompanyAndRegistrarAddress = () => {
     return (
       <>
-        <Box
-          component={"div"}
-          className={classes.container}
-          sx={{ flexDirection: "column", alignItems: "flex-start" }}
-        >
+        <Box component={"div"} className={classes.container} sx={{ flexDirection: "column", alignItems: "flex-start" }}>
           <Typography variant="h3">Other Details</Typography>
 
           <Grid2 container spacing={2} sx={{ width: "100%" }}>
             <Grid2 size={{ xs: 12, md: 6 }}>
-              <Typography
-                variant="h5"
-                sx={{ color: AppColors.textSecondary, mb: "10px" }}
-              >
+              <Typography variant="h5" sx={{ color: AppColors.textSecondary, mb: "10px" }}>
                 Company Contact Details
               </Typography>
               <Typography variant="h5">{IPOData?.company_name}</Typography>
               <Typography variant="h6">
-                <span style={{ color: AppColors.textSecondary }}>
-                  Address :
-                </span>
+                <span style={{ color: AppColors.textSecondary }}>Address :</span>
                 {IPOData?.company_contact_info?.address}
               </Typography>
               <Typography variant="h6">
@@ -945,37 +754,25 @@ const CompanyDetails = () => {
                 {IPOData?.company_contact_info?.email}
               </Typography>
               <Typography variant="h6">
-                <span style={{ color: AppColors.textSecondary }}>
-                  WebSite :
-                </span>
-                <a
-                  href={IPOData?.company_contact_info?.website}
-                  target="_blank"
-                >
+                <span style={{ color: AppColors.textSecondary }}>WebSite :</span>
+                <a href={IPOData?.company_contact_info?.website} target="_blank">
                   {IPOData?.company_contact_info?.website}
                 </a>
               </Typography>
             </Grid2>
             <Grid2 size={{ xs: 12, md: 6 }}>
-              <Typography
-                variant="h5"
-                sx={{ color: AppColors.textSecondary, mb: "10px" }}
-              >
+              <Typography variant="h5" sx={{ color: AppColors.textSecondary, mb: "10px" }}>
                 Registrar Contact Details
               </Typography>
               <Typography variant="h5">{IPOData?.registrar?.name}</Typography>
               <Typography variant="h6">
-                <span style={{ color: AppColors.textSecondary }}>Phone :</span>{" "}
-                {IPOData?.registrar?.phone}
+                <span style={{ color: AppColors.textSecondary }}>Phone :</span> {IPOData?.registrar?.phone}
               </Typography>
               <Typography variant="h6">
-                <span style={{ color: AppColors.textSecondary }}>Email :</span>{" "}
-                {IPOData?.registrar?.email}
+                <span style={{ color: AppColors.textSecondary }}>Email :</span> {IPOData?.registrar?.email}
               </Typography>
               <Typography variant="h6">
-                <span style={{ color: AppColors.textSecondary }}>
-                  WebSite :
-                </span>{" "}
+                <span style={{ color: AppColors.textSecondary }}>WebSite :</span>{" "}
                 <a href={IPOData?.registrar?.website} target="_blank">
                   {IPOData?.registrar?.website}
                 </a>
@@ -988,18 +785,11 @@ const CompanyDetails = () => {
   };
 
   const renderCompanyIssueObjectives = () => {
-    if (!IPOData?.issue_objectives || IPOData?.issue_objectives.length === 0)
-      return;
+    if (!IPOData?.issue_objectives || IPOData?.issue_objectives.length === 0) return;
     return (
       <>
-        <Box
-          component={"div"}
-          className={classes.container}
-          sx={{ flexDirection: "column", alignItems: "flex-start" }}
-        >
-          <Typography variant="h3">
-            {IPOData?.company_name} - Issue Objectives
-          </Typography>
+        <Box component={"div"} className={classes.container} sx={{ flexDirection: "column", alignItems: "flex-start" }}>
+          <Typography variant="h3">{IPOData?.company_name} - Issue Objectives</Typography>
           <List>
             {IPOData?.issue_objectives?.map((item, index) => (
               <ListItem key={index}>
@@ -1012,19 +802,59 @@ const CompanyDetails = () => {
       </>
     );
   };
-  const renderCompanyPromoters = () => {
-    if (!IPOData?.company_promoters || IPOData?.company_promoters.length === 0)
-      return;
+
+  const renderCompanyDisclaimer = () => {
+    if (!IPOData?.disclaimer || IPOData.disclaimer == "") return;
     return (
       <>
-        <Box
-          component={"div"}
-          className={classes.container}
-          sx={{ flexDirection: "column", alignItems: "flex-start" }}
-        >
-          <Typography variant="h3">
-            {IPOData?.company_name} Promoter(s)
+        <Box component={"div"} className={classes.container} sx={{ flexDirection: "column", alignItems: "flex-start" }}>
+          <Typography variant="h3">Disclaimer</Typography>
+          <Typography
+            component={"pre"}
+            variant="h6"
+            sx={{
+              color: AppColors.textSecondary,
+              overflowWrap: "break-word",
+              whiteSpace: "pre-wrap",
+              wordBreak: "break-word",
+            }}
+          >
+            {IPOData?.disclaimer}
           </Typography>
+        </Box>
+      </>
+    );
+  };
+  const renderAboutTheCompany = () => {
+    if (!IPOData?.company_about || IPOData?.company_about == "") return;
+    return (
+      <>
+        <Box component={"div"} className={classes.container} sx={{ flexDirection: "column", alignItems: "flex-start" }}>
+          <Typography variant="h3"> About the Company </Typography>
+          <Typography
+            component={"pre"}
+            variant="h6"
+            sx={{
+              width: "100%",
+              color: AppColors.textSecondary,
+              overflowWrap: "break-word", // Adds support for breaking long words
+              whiteSpace: "pre-wrap", // Ensures white spaces are respected and words can break
+              wordBreak: "break-word",
+            }}
+          >
+            {IPOData?.company_about}
+          </Typography>
+        </Box>
+      </>
+    );
+  };
+
+  const renderCompanyPromoters = () => {
+    if (!IPOData?.company_promoters || IPOData?.company_promoters.length === 0) return;
+    return (
+      <>
+        <Box component={"div"} className={classes.container} sx={{ flexDirection: "column", alignItems: "flex-start" }}>
+          <Typography variant="h3">{IPOData?.company_name} Promoter(s)</Typography>
           <List>
             {IPOData?.company_promoters?.map((item, index) => (
               <ListItem key={index}>
@@ -1039,7 +869,7 @@ const CompanyDetails = () => {
   };
   return (
     <RootContainer style={{ alignItems: "center", gap: "30px" }}>
-      {/* <DialogUpdateCompanyData /> */}
+      {/* <DialogUpdateCompanyData ipoData={IPOData} /> */}
       {renderCompanyData()}
     </RootContainer>
   );

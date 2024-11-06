@@ -6,15 +6,12 @@ import { useNavigate } from "react-router-dom";
 const useCompanyController = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const {
-    isCompaniesListLoading,
-    isCompaniesListError,
-    companiesList,
-    companyLastVisible,
-  } = useAppSelector((state) => state.IPO);
+  const { isCompaniesListLoading, isCompaniesListError, companiesList, companyLastVisible } = useAppSelector(
+    (state) => state.IPO
+  );
 
   React.useEffect(() => {
-    companiesList.length == 0 && dispatch(fetchCompaniesList({ pageSize: 50 }));
+    dispatch(fetchCompaniesList({ pageSize: 50 }));
   }, []);
 
   // const loadMore = () => {
@@ -25,12 +22,16 @@ const useCompanyController = () => {
   const listenerGoToCompanyDetails = (companyId?: string) => {
     companyId && navigate(`/ipo/${companyId}`);
   };
+  const listenerGoToAddIPO = () => {
+    navigate(`/ipo/add`);
+  };
   return {
     listenerGoToCompanyDetails,
     isCompaniesListLoading,
     isCompaniesListError,
     companiesList,
     companyLastVisible,
+    listenerGoToAddIPO,
   };
 };
 export default useCompanyController;

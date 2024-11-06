@@ -1,18 +1,17 @@
+import { Add } from "@mui/icons-material";
 import {
+  addIPOAPI,
+  deleteIPObyIdAPI,
   fetchCompaniesListAPI,
   fetchCompanyIPOByIdAPI,
+  updateIPOAPI,
 } from "./../../service/ipo.services";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { IIPOSchema } from "@/schema/ipo.schema";
 
 export const fetchCompaniesList = createAsyncThunk(
   "company/fetchCompaniesList",
-  async (
-    {
-      pageSize,
-      lastVisible,
-    }: { pageSize: number; lastVisible?: string | null },
-    { rejectWithValue }
-  ) => {
+  async ({ pageSize, lastVisible }: { pageSize: number; lastVisible?: string | null }, { rejectWithValue }) => {
     try {
       return await fetchCompaniesListAPI({ pageSize, lastVisible });
     } catch (error) {
@@ -26,6 +25,37 @@ export const fetchCompanyIPObyId = createAsyncThunk(
   async (companyId: string, { rejectWithValue }) => {
     try {
       return await fetchCompanyIPOByIdAPI(companyId);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const deleteIPObyId = createAsyncThunk(
+  "DELETE/deleteIPObyId",
+  async (companyId: string, { rejectWithValue }) => {
+    try {
+      await deleteIPObyIdAPI(companyId);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const addIPO = createAsyncThunk("POST/addIPObyId", async (ipoData: IIPOSchema, { rejectWithValue }) => {
+  try {
+    await addIPOAPI(ipoData);
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
+
+type TUpdateIPO = { ipoData: IIPOSchema; companyId: string };
+export const updateIPO = createAsyncThunk(
+  "PUT/updateIPO",
+  async ({ ipoData, companyId }: TUpdateIPO, { rejectWithValue }) => {
+    try {
+      await updateIPOAPI(companyId, ipoData);
     } catch (error) {
       return rejectWithValue(error);
     }

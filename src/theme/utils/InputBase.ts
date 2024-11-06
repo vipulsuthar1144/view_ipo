@@ -1,9 +1,5 @@
-import {
-  Theme,
-  ComponentsProps,
-  ComponentsOverrides,
-  ComponentsVariants,
-} from "@mui/material";
+import { SlotComponentPropsFromProps } from "./../../../node_modules/@mui/x-date-pickers/internals/models/helpers.d";
+import { Theme, ComponentsProps, ComponentsOverrides, ComponentsVariants } from "@mui/material";
 import AppColors from "./AppColors";
 
 interface MFormLabel {
@@ -44,7 +40,7 @@ export const getMuiInputBase = (_: Theme): MFormLabel => {
         root: {
           fontSize: "14px",
           backgroundColor: "sidebar.main",
-          maxHeight: "50px",
+          // maxHeight: "50px",
           padding: "0px",
           borderRadius: "25px",
           color: AppColors.textPrimary,

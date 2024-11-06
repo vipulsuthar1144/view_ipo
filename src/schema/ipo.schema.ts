@@ -23,13 +23,13 @@ export interface IIPOSchema {
   subscription_rate?: number;
   subscriptions?: ISubscription[];
   lot_sizes?: ILotSize[];
-  lead_managers?: string[];
+  lead_managers?: IString[];
   issue_objectives?: string[];
   type?: string;
   category?: string;
   status?: string;
   listing_at?: string[];
-  listing_price?: any;
+  listing_price?: number;
   created_at?: string;
   updated_at?: string;
 }
@@ -38,6 +38,8 @@ export interface IIssuePrice {
   min?: number;
   max?: number;
 }
+
+type IString = string;
 
 export interface IIssueSize {
   total?: number;

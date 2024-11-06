@@ -3,16 +3,13 @@ import { AppBar, Toolbar } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import AppColors from "../theme/utils/AppColors";
 import ImageComp from "./design/Image";
+import { useLocation } from "react-router-dom";
 
 const AppTopbar = () => {
   const classes = useStyles();
   // const navigate = useNavigate();
   // const [selectedItem, setSelectedItem] = useState<string | null>("/");
-  // const location = useLocation();
-
-  // useEffect(() => {
-  //   setSelectedItem(location.pathname);
-  // }, [location.pathname]);
+  const location = useLocation();
 
   // const menuItems = [
   //   { id: "/", name: "Companies" },
@@ -34,7 +31,8 @@ const AppTopbar = () => {
         backgroundColor: AppColors.white,
         backgroundImage: "none",
         boxShadow: "0px 10px 10px 2px rgba(0,0,0,0.2)",
-        zIndex: 1,
+        zIndex: 10,
+        display: location.pathname.includes("/update") || location.pathname.includes("/add") ? "none" : "block",
       }}
     >
       <Toolbar disableGutters sx={{ paddingX: 1 }} className={classes.toolBar}>
