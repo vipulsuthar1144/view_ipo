@@ -408,7 +408,7 @@ const CompanyDetails = () => {
               <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
                 Issue Size
               </Typography>
-              <Typography variant="h6">{`Total : ${formatPrice(IPOData?.issue_size?.total)} Cr.`}</Typography>
+              <Typography variant="h6">{`Total : ${formatPrice((IPOData?.issue_size?.fresh ?? 0) + (IPOData?.issue_size?.offer_for_sale ?? 0))} Cr.`}</Typography>
               <Typography variant="h6">{`#Fresh : ${formatPrice(IPOData?.issue_size?.fresh)} Cr.`}</Typography>
               <Typography variant="h6">{`#OFS : ${formatPrice(IPOData?.issue_size?.offer_for_sale)} Cr.`}</Typography>
             </Grid2>
@@ -486,7 +486,9 @@ const CompanyDetails = () => {
                   </TableCell>
                   <TableCell>
                     <Typography variant="h6" sx={{ color: AppColors.textSecondary }}>
-                      {formatNumber(IPOData?.applications?.nii?.total)}
+                      {formatNumber(
+                        (IPOData?.applications?.nii?.b_nii ?? 0) + (IPOData?.applications?.nii?.s_nii ?? 0)
+                      )}
                     </Typography>
                     <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
                       {`${formatNumber(IPOData?.applications?.nii?.b_nii)} / ${formatNumber(IPOData?.applications?.nii?.s_nii)}`}
@@ -499,7 +501,12 @@ const CompanyDetails = () => {
                   </TableCell>
                   <TableCell>
                     <Typography variant="h6" sx={{ color: AppColors.textSecondary }}>
-                      {formatNumber(IPOData?.applications?.total)}
+                      {formatNumber(
+                        (IPOData?.applications?.qib ?? 0) +
+                          (IPOData?.applications?.nii?.b_nii ?? 0) +
+                          (IPOData?.applications?.nii?.s_nii ?? 0) +
+                          (IPOData?.applications?.retail ?? 0)
+                      )}
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -553,7 +560,7 @@ const CompanyDetails = () => {
                     </TableCell>
                     <TableCell>
                       <Typography variant="h6" sx={{ color: AppColors.textSecondary }}>
-                        {formatNumber(item.nii?.total)} x
+                        {formatNumber((item.nii?.b_nii ?? 0) + (item.nii?.s_nii ?? 0))} x
                       </Typography>
                       <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
                         {`${formatNumber(item.nii?.b_nii)} x  / ${formatNumber(item.nii?.s_nii)} x`}
@@ -566,7 +573,10 @@ const CompanyDetails = () => {
                     </TableCell>
                     <TableCell>
                       <Typography variant="h6" sx={{ color: AppColors.textSecondary }}>
-                        {formatNumber(item.total)} x
+                        {formatNumber(
+                          (item.qib ?? 0) + (item.nii?.b_nii ?? 0) + (item.nii?.s_nii ?? 0) + (item.retail ?? 0)
+                        )}{" "}
+                        x
                       </Typography>
                     </TableCell>
                   </TableRow>

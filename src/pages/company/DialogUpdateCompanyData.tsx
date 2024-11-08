@@ -1,37 +1,17 @@
-import * as React from "react";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemButton from "@mui/material/ListItemButton";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import CloseIcon from "@mui/icons-material/Close";
-import Slide from "@mui/material/Slide";
-import { TransitionProps } from "@mui/material/transitions";
+import { IIPOSchema } from "@/schema/ipo.schema";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import { addIPO, fetchCompanyIPObyId, updateIPO } from "@/store/thunkService/ipo.thunkService";
 import AppColors from "@/theme/utils/AppColors";
+import { imgDefaultCompany } from "@assets/images";
+import { ImageCompWithLoader } from "@components/design/Image";
+import { RootContainer } from "@components/design/styledComponents";
+import FallbackError from "@components/FallbackError";
+import { AddCircleOutline, Delete, Save } from "@mui/icons-material";
 import {
-  Add,
-  AddCircle,
-  AddCircleOutline,
-  CircleRounded,
-  Delete,
-  Edit,
-  LteMobiledataRounded,
-  Save,
-} from "@mui/icons-material";
-import {
-  Avatar,
   Backdrop,
   Box,
-  Chip,
   CircularProgress,
   Grid2,
-  InputAdornment,
-  ListItem,
   Paper,
   Table,
   TableBody,
@@ -41,33 +21,18 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
+import AppBar from "@mui/material/AppBar";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
 import { makeStyles } from "@mui/styles";
-import AppTextField from "@components/design/AppTextField";
-import { imgDefaultCompany } from "@assets/images";
-import { ImageCompWithLoader } from "@components/design/Image";
-import EditableTable from "./EditableTable";
 import { DatePicker } from "@mui/x-date-pickers";
-import { IIPOSchema } from "@/schema/ipo.schema";
-import { useForm, SubmitHandler, useFieldArray, Controller } from "react-hook-form";
-import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
-import { collectionName, db } from "@/config/firebase.config";
-import EditableChips from "./EditableChips";
-import { useAppDispatch, useAppSelector } from "@/store/store";
 import moment from "moment";
-import { log } from "console";
+import * as React from "react";
+import { Controller, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { addIPO, fetchCompanyIPObyId, updateIPO } from "@/store/thunkService/ipo.thunkService";
-import { RootContainer } from "@components/design/styledComponents";
-import FallbackError from "@components/FallbackError";
-
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement<unknown>;
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+import EditableChips from "./EditableChips";
 
 type FormValues = IIPOSchema;
 
@@ -82,8 +47,6 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
   const { companyId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-
-  // const [companyImg, setCompanyImage] = React.useState(imgDefaultCompany);
 
   React.useEffect(() => {
     if (companyId) {
@@ -108,18 +71,38 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
     isCRUDIPOError,
   } = useAppSelector((state) => state.IPO);
 
-  // React.useEffect(() => {
-  //   IPOData?.company_logo && setCompanyImage(IPOData.company_logo);
-  // }, [IPOData]);
+  // const [companyLogo, setCompanyLogo] = React.useState(IPOData?.company_logo ?? imgDefaultCompany);
 
   const {
     register,
     handleSubmit,
     control,
+    watch,
     formState: { errors },
     reset,
   } = useForm<FormValues>({
-    defaultValues: !isNew ? (IPOData ?? {}) : {},
+    defaultValues: !isNew
+      ? IPOData?.lot_sizes
+        ? (IPOData ?? {})
+        : {
+            ...IPOData,
+            lot_sizes: [
+              { application: "retail_min" },
+              { application: "retail_max" },
+              { application: "s_nii_min" },
+              { application: "s_nii_max" },
+              { application: "b_nii_min" },
+            ],
+          }
+      : {
+          lot_sizes: [
+            { application: "retail_min" },
+            { application: "retail_max" },
+            { application: "s_nii_min" },
+            { application: "s_nii_max" },
+            { application: "b_nii_min" },
+          ],
+        },
   });
 
   const {
@@ -138,19 +121,10 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
     control,
     name: "subscriptions",
   });
-
-  // const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = event.target.files?.[0];
-  //   console.log(file);
-
-  //   if (file) {
-  //     // setImage(file);
-  //     // Create a URL to preview the image
-  //     const previewUrl = URL.createObjectURL(file);
-  //     console.log(previewUrl);
-  //     setCompanyImage(previewUrl);
-  //   }
-  // };
+  const { fields: lotSizesFields } = useFieldArray({
+    control,
+    name: "lot_sizes",
+  });
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     data.lead_managers = leadManagers;
@@ -222,6 +196,19 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
               error={errors.company_name ? true : false}
               helperText={errors.company_name ? errors.company_name.message : null}
               {...register("company_name", { required: "Company name is required" })}
+            />
+            <TextField
+              id="company_logo"
+              label="Company Logo URL"
+              fullWidth
+              autoComplete="on"
+              type="url"
+              error={errors.company_logo ? true : false}
+              sx={{
+                marginTop: "20px",
+              }}
+              helperText={errors.company_logo ? errors.company_logo.message : null}
+              {...register("company_logo", { required: "Company logo is required" })}
             />
           </Box>
         </Box>
@@ -764,6 +751,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                             step: ".01",
                           },
                         }}
+                        defaultValue={0}
                         error={errors?.subscriptions && errors?.subscriptions[index]?.qib ? true : false}
                         helperText={errors.subscriptions ? errors.subscriptions[index]?.qib?.message : null}
                         {...register(`subscriptions.${index}.qib` as const, {
@@ -784,6 +772,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                             step: ".01",
                           },
                         }}
+                        defaultValue={0}
                         error={errors?.subscriptions && errors?.subscriptions[index]?.nii?.b_nii ? true : false}
                         helperText={errors.subscriptions ? errors.subscriptions[index]?.nii?.b_nii?.message : null}
                         {...register(`subscriptions.${index}.nii.b_nii` as const, {
@@ -804,6 +793,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                             step: ".01",
                           },
                         }}
+                        defaultValue={0}
                         error={errors?.subscriptions && errors?.subscriptions[index]?.nii?.s_nii ? true : false}
                         helperText={errors.subscriptions ? errors.subscriptions[index]?.nii?.s_nii?.message : null}
                         {...register(`subscriptions.${index}.nii.s_nii` as const, {
@@ -824,6 +814,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                             step: ".01",
                           },
                         }}
+                        defaultValue={0}
                         error={errors?.subscriptions && errors?.subscriptions[index]?.retail ? true : false}
                         helperText={errors.subscriptions ? errors.subscriptions[index]?.retail?.message : null}
                         {...register(`subscriptions.${index}.retail` as const, {
@@ -835,6 +826,124 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                       <IconButton onClick={() => subscriptionsRemove(index)} color="error">
                         <Delete />
                       </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      </>
+    );
+  };
+  const editCompanyMarketLot = () => {
+    return (
+      <>
+        <Box
+          component={"div"}
+          className={classes.container}
+          sx={{ flexDirection: "column", alignItems: "flex-start", gap: "5px" }}
+        >
+          <Typography variant="h3">Company - Market Lot (Lot Size)</Typography>
+
+          <TableContainer sx={{ width: "100%" }} component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    <Typography variant="h5">Application</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="h5">Lot</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="h5">Shares</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="h5">Amount</Typography>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {lotSizesFields.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell>
+                      <TextField
+                        id={`lot_sizes.${index}.application`}
+                        label=""
+                        fullWidth
+                        autoComplete="on"
+                        autoFocus={false}
+                        disabled={true}
+                        error={errors?.lot_sizes && errors?.lot_sizes[index]?.application ? true : false}
+                        helperText={errors.lot_sizes ? errors.lot_sizes[index]?.application?.message : null}
+                        {...register(`lot_sizes.${index}.application` as const, {
+                          required: "Field is required",
+                        })}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        id={`lot_sizes.${index}.lot`}
+                        label=""
+                        fullWidth
+                        autoComplete="on"
+                        autoFocus={false}
+                        type="number"
+                        slotProps={{
+                          htmlInput: {
+                            step: ".01",
+                          },
+                        }}
+                        defaultValue={0}
+                        error={errors?.lot_sizes && errors?.lot_sizes[index]?.lot ? true : false}
+                        helperText={errors.lot_sizes ? errors.lot_sizes[index]?.lot?.message : null}
+                        {...register(`lot_sizes.${index}.lot` as const, {
+                          required: "Field is required",
+                        })}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        id={`lot_sizes.${index}.shares`}
+                        label=""
+                        fullWidth
+                        autoComplete="on"
+                        autoFocus={false}
+                        type="number"
+                        slotProps={{
+                          htmlInput: {
+                            step: ".01",
+                          },
+                        }}
+                        defaultValue={0}
+                        error={errors?.lot_sizes && errors?.lot_sizes[index]?.shares ? true : false}
+                        helperText={errors.lot_sizes ? errors.lot_sizes[index]?.shares?.message : null}
+                        {...register(`lot_sizes.${index}.shares` as const, {
+                          required: "Field is required",
+                        })}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        id={`lot_sizes.${index}.amount`}
+                        label=""
+                        fullWidth
+                        autoComplete="on"
+                        autoFocus={false}
+                        type="number"
+                        slotProps={{
+                          htmlInput: {
+                            step: ".01",
+                          },
+                        }}
+                        defaultValue={0}
+                        error={errors?.lot_sizes && errors?.lot_sizes[index]?.amount ? true : false}
+                        helperText={errors.lot_sizes ? errors.lot_sizes[index]?.amount?.message : null}
+                        {...register(`lot_sizes.${index}.amount` as const, {
+                          required: "Field is required",
+                        })}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -884,9 +993,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                       }}
                       error={errors.applications?.qib ? true : false}
                       helperText={errors.applications?.qib ? errors.applications?.qib.message : null}
-                      {...register("applications.qib", {
-                        required: "Field is required",
-                      })}
+                      {...register("applications.qib")}
                     />
                   </TableCell>
                   <TableCell>
@@ -903,9 +1010,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                       }}
                       error={errors.applications?.nii?.b_nii ? true : false}
                       helperText={errors.applications?.nii?.b_nii ? errors.applications?.nii?.b_nii.message : null}
-                      {...register("applications.nii.b_nii", {
-                        required: "Field is required",
-                      })}
+                      {...register("applications.nii.b_nii")}
                     />
                   </TableCell>
                   <TableCell>
@@ -922,9 +1027,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                       }}
                       error={errors.applications?.nii?.s_nii ? true : false}
                       helperText={errors.applications?.nii?.s_nii ? errors.applications?.nii?.s_nii.message : null}
-                      {...register("applications.nii.s_nii", {
-                        required: "Field is required",
-                      })}
+                      {...register("applications.nii.s_nii")}
                     />
                   </TableCell>
                   <TableCell>
@@ -941,9 +1044,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                       }}
                       error={errors.applications?.retail ? true : false}
                       helperText={errors.applications?.retail ? errors.applications?.retail.message : null}
-                      {...register("applications.retail", {
-                        required: "Field is required",
-                      })}
+                      {...register("applications.retail")}
                     />
                   </TableCell>
                 </TableRow>
@@ -1181,6 +1282,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                             step: ".01",
                           },
                         }}
+                        defaultValue={0}
                         error={errors?.company_financials && errors?.company_financials[index]?.assets ? true : false}
                         helperText={
                           errors.company_financials ? errors.company_financials[index]?.assets?.message : null
@@ -1202,6 +1304,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                             step: ".01",
                           },
                         }}
+                        defaultValue={0}
                         error={errors?.company_financials && errors?.company_financials[index]?.revenue ? true : false}
                         helperText={
                           errors.company_financials ? errors.company_financials[index]?.revenue?.message : null
@@ -1223,6 +1326,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                             step: ".01",
                           },
                         }}
+                        defaultValue={0}
                         error={errors?.company_financials && errors?.company_financials[index]?.profit ? true : false}
                         helperText={
                           errors.company_financials ? errors.company_financials[index]?.profit?.message : null
@@ -1342,7 +1446,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                   error={errors.company_contact_info?.phone ? true : false}
                   helperText={errors.company_contact_info?.phone ? errors.company_contact_info?.phone.message : null}
                   {...register("company_contact_info.phone", {
-                    required: "Field is required",
+                    // required: "Field is required",
                     pattern: {
                       value: /^[0-9]{10}$/, // Validates only numbers and ensures exactly 10 digits
                       message: "Enter a valid 10-digit phone number",
@@ -1358,7 +1462,9 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                   type="email"
                   error={errors.company_contact_info?.email ? true : false}
                   helperText={errors.company_contact_info?.email ? errors.company_contact_info?.email.message : null}
-                  {...register("company_contact_info.email", { required: "Field is required" })}
+                  {...register("company_contact_info.email", {
+                    // required: "Field is required"
+                  })}
                 />
 
                 <TextField
@@ -1371,7 +1477,9 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                   helperText={
                     errors.company_contact_info?.website ? errors.company_contact_info?.website.message : null
                   }
-                  {...register("company_contact_info.website", { required: "Field is required" })}
+                  {...register("company_contact_info.website", {
+                    // required: "Field is required"
+                  })}
                 />
 
                 <TextField
@@ -1385,7 +1493,9 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                   helperText={
                     errors.company_contact_info?.address ? errors.company_contact_info?.address.message : null
                   }
-                  {...register("company_contact_info.address", { required: "Field is required" })}
+                  {...register("company_contact_info.address", {
+                    // required: "Field is required"
+                  })}
                 />
               </Box>
             </Grid2>
@@ -1406,7 +1516,9 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                   autoComplete="on"
                   error={errors.registrar?.name ? true : false}
                   helperText={errors.registrar?.name ? errors.registrar?.name.message : null}
-                  {...register("registrar.name", { required: "Field is required" })}
+                  {...register("registrar.name", {
+                    // required: "Field is required"
+                  })}
                 />
 
                 <TextField
@@ -1418,7 +1530,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                   error={errors.registrar?.phone ? true : false}
                   helperText={errors.registrar?.phone ? errors.registrar?.phone.message : null}
                   {...register("registrar.phone", {
-                    required: "Field is required",
+                    // required: "Field is required",
                     pattern: {
                       value: /^[0-9]{10}$/, // Validates only numbers and ensures exactly 10 digits
                       message: "Enter a valid 10-digit phone number",
@@ -1434,7 +1546,9 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                   type="email"
                   error={errors.registrar?.email ? true : false}
                   helperText={errors.registrar?.email ? errors.registrar?.email.message : null}
-                  {...register("registrar.email", { required: "Field is required" })}
+                  {...register("registrar.email", {
+                    // required: "Field is required"
+                  })}
                 />
 
                 <TextField
@@ -1445,7 +1559,9 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                   type="url"
                   error={errors.registrar?.website ? true : false}
                   helperText={errors.registrar?.website ? errors.registrar?.website.message : null}
-                  {...register("registrar.website", { required: "Field is required" })}
+                  {...register("registrar.website", {
+                    // required: "Field is required"
+                  })}
                 />
               </Box>
             </Grid2>
@@ -1550,13 +1666,14 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
           {editCompanyData()}
           {editIPODetails()}
           {editCompanySubscriptionDetails()}
-          {editApplicationDetails()}
-          {editCompanyLeadManagers()}
-          {editCompanyValuations()}
           {editCompanyFinancials()}
-          {editCompanyStrengthAndWeakness()}
-          {editCompanyIssueObjectives()}
+          {editApplicationDetails()}
+          {editCompanyMarketLot()}
+          {editCompanyValuations()}
+          {editCompanyLeadManagers()}
           {editCompanyPromoters()}
+          {editCompanyIssueObjectives()}
+          {editCompanyStrengthAndWeakness()}
           {editCompanyAndRegistrarAddress()}
           {editCompanyAbout()}
           {editCompanyDisclaimer()}
