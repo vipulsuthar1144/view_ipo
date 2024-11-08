@@ -171,7 +171,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
         >
           <Box>
             <ImageCompWithLoader
-              img={IPOData?.company_logo}
+              img={isNew ? imgDefaultCompany : IPOData?.company_logo}
               alt={"Company logo"}
               errorImage={imgDefaultCompany}
               style={{
