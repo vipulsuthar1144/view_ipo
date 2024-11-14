@@ -1,25 +1,18 @@
-import React, { useState } from "react";
+import AppTextField from "@components/design/AppTextField";
+import { AddCircleOutline, Delete } from "@mui/icons-material";
 import {
+  Box,
+  IconButton,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
-  Button,
-  Box,
-  IconButton,
-  Paper,
 } from "@mui/material";
-import AppTextField from "@components/design/AppTextField";
 import { DatePicker } from "@mui/x-date-pickers";
-import {
-  AddCircleOutline,
-  AddOutlined,
-  Delete,
-  DeleteOutline,
-} from "@mui/icons-material";
+import React, { useState } from "react";
 
 interface RowData {
   id: number;
@@ -31,16 +24,16 @@ const EditableTable: React.FC = () => {
   const [rows, setRows] = useState<RowData[]>([{ id: 1, name: "", age: "" }]);
   const [rowCount, setRowCount] = useState(1);
 
-  const handleInputChange = (
-    id: number,
-    field: keyof RowData,
-    value: string
-  ) => {
-    const updatedRows = rows.map((row) =>
-      row.id === id ? { ...row, [field]: value } : row
-    );
-    setRows(updatedRows);
-  };
+  // const handleInputChange = (
+  //   id: number,
+  //   field: keyof RowData,
+  //   value: string
+  // ) => {
+  //   const updatedRows = rows.map((row) =>
+  //     row.id === id ? { ...row, [field]: value } : row
+  //   );
+  //   setRows(updatedRows);
+  // };
 
   const addRow = () => {
     setRowCount(rowCount + 1);

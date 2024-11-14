@@ -11,7 +11,6 @@ import {
   limit,
   orderBy,
   query,
-  startAfter,
   Timestamp,
   updateDoc,
   where,
@@ -20,23 +19,31 @@ import {
 export const fetchCompaniesListAPI = async ({
   pageSize,
   lastVisible,
+  fetchType = "all",
 }: {
   pageSize: number;
   lastVisible?: string | null;
+  fetchType: "all" | "active" | "inactive";
 }) => {
   try {
     const companyCollection = collection(db, collectionName);
+    console.log(lastVisible);
     let queryParams;
-    if (lastVisible) {
-      queryParams = query(
-        companyCollection,
-        orderBy("created_at", "desc"),
-        startAfter(`${lastVisible}`),
-        limit(pageSize)
-      );
-    } else {
+    // if (lastVisible) {
+    //   queryParams = query(
+    //     companyCollection,
+    //     // orderBy("created_at", "desc"),
+    //     startAfter(`${lastVisible}`),
+    //     // startAfter(`JT5ZpMlqVb7mj4SqmFoj`),
+    //     limit(pageSize)
+    //   );
+    // } else {
+    if (fetchType == "all") {
       queryParams = query(companyCollection, orderBy("created_at", "desc"), limit(pageSize));
+    } else {
+      queryParams = query(companyCollection, where("is_active", "==", fetchType == "active"), limit(pageSize));
     }
+    // }
     // queryParams = query(companyCollection, orderBy("created_at", "desc"), limit(10));
 
     const snapshot = await getDocs(queryParams);

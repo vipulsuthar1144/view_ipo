@@ -10,9 +10,11 @@ const useCompanyController = () => {
     (state) => state.IPO
   );
 
+  const [filterStatus, setFilterStatus] = React.useState<"all" | "active" | "inactive">("all");
+
   React.useEffect(() => {
-    dispatch(fetchCompaniesList({ pageSize: 50 }));
-  }, []);
+    dispatch(fetchCompaniesList({ pageSize: 100, fetchType: filterStatus }));
+  }, [filterStatus]);
 
   // const loadMore = () => {
   //   dispatch(
@@ -32,6 +34,8 @@ const useCompanyController = () => {
     companiesList,
     companyLastVisible,
     listenerGoToAddIPO,
+    filterStatus,
+    setFilterStatus,
   };
 };
 export default useCompanyController;

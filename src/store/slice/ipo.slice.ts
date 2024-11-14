@@ -27,6 +27,8 @@ interface IIPOSlice {
 
   isCRUDIPOLoading: boolean;
   isCRUDIPOError: boolean;
+
+  isIPOActive: boolean;
 }
 
 const initialState: IIPOSlice = {
@@ -48,6 +50,8 @@ const initialState: IIPOSlice = {
 
   isCRUDIPOError: false,
   isCRUDIPOLoading: false,
+
+  isIPOActive: true,
 };
 
 const ipoSlice = createSlice({
@@ -71,6 +75,9 @@ const ipoSlice = createSlice({
     },
     updateCompanyListingOfGroupsList: (state, action: PayloadAction<string[]>) => {
       state.companyListOfGroupsList = [...action.payload];
+    },
+    updateCompanyIPOActiveStatus: (state, action: PayloadAction<boolean>) => {
+      state.isIPOActive = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -148,6 +155,7 @@ export const {
   updateCompanyPromotersList,
   updateCompanyStrengthList,
   updateCompanyWeaknessList,
+  updateCompanyIPOActiveStatus,
 } = ipoSlice.actions;
 
 export default ipoSlice.reducer;

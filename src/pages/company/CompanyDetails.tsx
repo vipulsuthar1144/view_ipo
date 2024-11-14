@@ -29,7 +29,6 @@ import {
 import { makeStyles } from "@mui/styles";
 import { formatDate, formatNumber, formatPrice, isPastDate, isPastOrSameDate } from "@utils/genaralFunctions";
 import useCompanyDetailsController from "./CompanyDetails.controller";
-import DialogUpdateCompanyData from "./DialogUpdateCompanyData";
 const CompanyDetails = () => {
   const classes = useStyles();
   const { isIPODataError, isIPODataLoading, IPOData, isCRUDIPOLoading, handleDeleteIPObyId, listenerGoToUpdateScreen } =
@@ -227,6 +226,9 @@ const CompanyDetails = () => {
             }}
           />
           <Box sx={{ flex: 3, minWidth: "fit-content" }}>
+            <Typography variant="h5" color={IPOData.is_active ? "success.main" : "error.main"}>
+              {IPOData.is_active ? "Active" : "Inactive"}
+            </Typography>
             <Typography variant="h3" mb={"5px"}>
               {IPOData.company_name}
               {renderIPOStatus()}

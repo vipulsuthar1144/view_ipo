@@ -1,10 +1,10 @@
+import AppColors from "@/theme/utils/AppColors";
 import { RootContainer } from "@components/design/styledComponents";
 import FallbackError from "@components/FallbackError";
-import { AppBar, Button, CircularProgress, Grid2, Toolbar } from "@mui/material";
-import useCompanyController from "./Company.controller";
 import ItemCompanyList from "@components/ItemCompanyList";
-import AppColors from "@/theme/utils/AppColors";
 import { AddCircleRounded } from "@mui/icons-material";
+import { AppBar, Button, CircularProgress, Grid2, ToggleButton, ToggleButtonGroup, Toolbar } from "@mui/material";
+import useCompanyController from "./Company.controller";
 
 const Company = () => {
   const {
@@ -14,6 +14,8 @@ const Company = () => {
     isCompaniesListError,
     companiesList,
     companyLastVisible,
+    filterStatus,
+    setFilterStatus,
   } = useCompanyController();
 
   const renderCompanyList = () => {
@@ -36,6 +38,52 @@ const Company = () => {
     );
   };
 
+  const handleFilterStatusChange = (_: React.MouseEvent<HTMLElement>, newValue: string | null) => {
+    if (newValue !== null && (newValue == "all" || newValue == "active" || newValue == "inactive")) {
+      setFilterStatus(newValue);
+    }
+  };
+
+  const renderFilterButtons = () => {
+    return (
+      <ToggleButtonGroup
+        value={filterStatus}
+        exclusive
+        onChange={handleFilterStatusChange}
+        aria-label="Filter IPO"
+        sx={{
+          "& .MuiToggleButton-root": {
+            color: "purple",
+            borderColor: "purple",
+            borderRadius: "20px",
+            padding: "8px 20px",
+            marginBottom: "10px",
+            "&:not(:last-of-type)": {
+              marginRight: "10px",
+            },
+            "&.Mui-selected": {
+              color: "white",
+              backgroundColor: "purple",
+            },
+            "&:hover": {
+              backgroundColor: "purple.500",
+            },
+          },
+        }}
+      >
+        <ToggleButton value="all" aria-label="all">
+          All
+        </ToggleButton>
+        <ToggleButton value="active" aria-label="active">
+          Active
+        </ToggleButton>
+        <ToggleButton value="inactive" aria-label="inactive">
+          Inactive
+        </ToggleButton>
+      </ToggleButtonGroup>
+    );
+  };
+
   return (
     <RootContainer>
       <AppBar
@@ -45,7 +93,7 @@ const Company = () => {
           zIndex: 8,
           backgroundColor: AppColors.white,
           borderRadius: "10px",
-          marginBottom: "20px",
+          marginBottom: "10px",
         }}
       >
         <Toolbar>
@@ -65,6 +113,7 @@ const Company = () => {
           </Button>
         </Toolbar>
       </AppBar>
+      {renderFilterButtons()}
       {renderCompanyList()}
       {/* <Button onClick={loadMore} disabled={isCompaniesListLoading}>
         Load More

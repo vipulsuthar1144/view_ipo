@@ -1,5 +1,6 @@
 export interface IIPOSchema {
   id?: string;
+  is_active?: boolean;
   company_name?: string;
   company_logo?: string;
   slug?: string;

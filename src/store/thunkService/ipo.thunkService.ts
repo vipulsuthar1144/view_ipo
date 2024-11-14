@@ -1,4 +1,5 @@
-import { Add } from "@mui/icons-material";
+import { IIPOSchema } from "@/schema/ipo.schema";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   addIPOAPI,
   deleteIPObyIdAPI,
@@ -6,14 +7,19 @@ import {
   fetchCompanyIPOByIdAPI,
   updateIPOAPI,
 } from "./../../service/ipo.services";
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { IIPOSchema } from "@/schema/ipo.schema";
 
 export const fetchCompaniesList = createAsyncThunk(
   "company/fetchCompaniesList",
-  async ({ pageSize, lastVisible }: { pageSize: number; lastVisible?: string | null }, { rejectWithValue }) => {
+  async (
+    {
+      pageSize,
+      lastVisible,
+      fetchType,
+    }: { pageSize: number; fetchType: "all" | "active" | "inactive"; lastVisible?: string | null },
+    { rejectWithValue }
+  ) => {
     try {
-      return await fetchCompaniesListAPI({ pageSize, lastVisible });
+      return await fetchCompaniesListAPI({ pageSize, lastVisible, fetchType });
     } catch (error) {
       return rejectWithValue(error);
     }

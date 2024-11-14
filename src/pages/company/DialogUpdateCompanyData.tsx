@@ -6,6 +6,7 @@ import { imgDefaultCompany } from "@assets/images";
 import { ImageCompWithLoader } from "@components/design/Image";
 import { RootContainer } from "@components/design/styledComponents";
 import FallbackError from "@components/FallbackError";
+import IsActiveSwitch from "@components/IsActiveSwitch";
 import { AddCircleOutline, Delete, Save } from "@mui/icons-material";
 import {
   Backdrop,
@@ -69,6 +70,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
     IPOData,
     isCRUDIPOLoading,
     isCRUDIPOError,
+    isIPOActive,
   } = useAppSelector((state) => state.IPO);
 
   // const [companyLogo, setCompanyLogo] = React.useState(IPOData?.company_logo ?? imgDefaultCompany);
@@ -77,7 +79,6 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
     register,
     handleSubmit,
     control,
-    watch,
     formState: { errors },
     reset,
   } = useForm<FormValues>({
@@ -133,6 +134,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
     data.company_strengths = companyStrenghtList;
     data.company_weaknesses = companyWeaknessList;
     data.listing_at = companyListOfGroupsList;
+    data.is_active = isIPOActive;
     if (isNew) {
       // handleNewIPO(data);
       dispatch(addIPO(data))
@@ -210,6 +212,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
               helperText={errors.company_logo ? errors.company_logo.message : null}
               {...register("company_logo", { required: "Company logo is required" })}
             />
+            <IsActiveSwitch isActive={isNew ? true : IPOData?.is_active} />
           </Box>
         </Box>
       </>
@@ -712,7 +715,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                 </TableRow>
               </TableHead>
               <TableBody>
-                {subscriptionsFields.map((row, index) => (
+                {subscriptionsFields.map((_, index) => (
                   <TableRow key={index}>
                     <TableCell>
                       {/* <DatePicker name="startDate" /> */}
@@ -865,7 +868,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                 </TableRow>
               </TableHead>
               <TableBody>
-                {lotSizesFields.map((row, index) => (
+                {lotSizesFields.map((_, index) => (
                   <TableRow key={index}>
                     <TableCell>
                       <TextField
@@ -1242,7 +1245,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                 </TableRow>
               </TableHead>
               <TableBody>
-                {companyFinancialsFields.map((companyFinancialsField, index) => (
+                {companyFinancialsFields.map((_, index) => (
                   <TableRow key={index}>
                     <TableCell>
                       <Controller
