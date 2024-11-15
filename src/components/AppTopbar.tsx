@@ -3,13 +3,12 @@ import { AppBar, Toolbar } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import AppColors from "../theme/utils/AppColors";
 import ImageComp from "./design/Image";
-import { useLocation } from "react-router-dom";
 
 const AppTopbar = () => {
   const classes = useStyles();
   // const navigate = useNavigate();
   // const [selectedItem, setSelectedItem] = useState<string | null>("/");
-  const location = useLocation();
+  // const location = useLocation();
 
   // const menuItems = [
   //   { id: "/", name: "Companies" },
