@@ -16,12 +16,13 @@ const AppLayout = () => {
 
 const useStyles = makeStyles((_: Theme) => ({
   root: {
+    width: "100%",
     minHeight: "100vh",
     backgroundColor: AppColors.primaryBgColor,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    // overflowX: "hidden",
+    overflow: "hidden auto",
   },
 }));
 

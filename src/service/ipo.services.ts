@@ -134,6 +134,8 @@ export const deleteIPObyIdAPI = async (id: string) => {
 
 export const addIPOAPI = async (data: IIPOSchema) => {
   try {
+    console.log("data for add: ", data);
+
     const ipoRef = collection(db, collectionName);
     const ipoDoc = await addDoc(ipoRef, { ...data, created_at: Timestamp.now(), updated_at: Timestamp.now() });
     console.log("IPO added successfully with ID: ", ipoDoc.id);
@@ -144,6 +146,8 @@ export const addIPOAPI = async (data: IIPOSchema) => {
 
 export const updateIPOAPI = async (id: string, data: IIPOSchema) => {
   try {
+    console.log("data for update: ", data);
+
     const ipoRef = doc(db, collectionName, id);
     await updateDoc(ipoRef, { ...data, updated_at: Timestamp.now() });
     console.log("IPO updated successfully!");

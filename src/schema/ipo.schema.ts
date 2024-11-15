@@ -36,8 +36,8 @@ export interface IIPOSchema {
 }
 
 export interface IIssuePrice {
-  min?: number;
-  max?: number;
+  min?: Number;
+  max?: Number;
 }
 
 type IString = string;

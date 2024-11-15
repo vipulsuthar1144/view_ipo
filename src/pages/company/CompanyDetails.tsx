@@ -346,8 +346,7 @@ const CompanyDetails = () => {
                 IssuePrice
               </Typography>
               <Typography variant="h6">
-                {`₹${formatNumber(IPOData?.issue_price?.min)}-${formatNumber(IPOData?.issue_price?.max)}`} per Equity
-                Share
+                {`₹${IPOData?.issue_price?.min}-${IPOData?.issue_price?.max}`} per Equity Share
               </Typography>
             </Grid2>
 
@@ -901,8 +900,9 @@ const useStyles = makeStyles({
     // height: "300px",
     maxWidth: "1200px",
     width: "100%",
+    // height: "fit-content",
     borderRadius: "10px",
-    overflow: "hidden",
+    // overflow: "hidden",
     boxShadow: "0px 10px 10px 2px rgba(0,0,0,0.2)",
   },
 });

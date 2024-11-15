@@ -8,7 +8,7 @@ export const RootContainer = styled(Box)({
   display: "flex",
   flexDirection: "column",
   gap: "10px",
-  padding: "20px 10px 50px 10px",
+  padding: "100px 10px 50px 10px",
 });
 
 export const ContainerWithoutScrollbar = styled(Box)({
