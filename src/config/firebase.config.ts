@@ -13,6 +13,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-export const collectionName = "test";
+export const collectionName = "new_ipo";
 
 export const db = getFirestore(app);
