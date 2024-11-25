@@ -4,6 +4,7 @@ import AppTheme from "./theme/AppTheme";
 import { store } from "./store/store";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import "./App.css";
 
 function App() {
   return (

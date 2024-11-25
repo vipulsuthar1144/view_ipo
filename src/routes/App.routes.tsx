@@ -1,13 +1,19 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import AppLayout from "../layout/App.layout";
+import LoginPage from "@/pages/auth/Login";
 import Company from "@/pages/company/Company";
-import FallbackError from "@components/FallbackError";
 import CompanyDetails from "@/pages/company/CompanyDetails";
 import DialogUpdateCompanyData from "@/pages/company/DialogUpdateCompanyData";
+import FallbackError from "@components/FallbackError";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import AppLayout from "../layout/App.layout";
 
 const AppRoutes = () => {
   const routes = createBrowserRouter(
     [
+      {
+        path: "/login",
+        element: <LoginPage />,
+        errorElement: <FallbackError type="something_went_wrong" />,
+      },
       {
         path: "/",
         element: <AppLayout />,
@@ -27,7 +33,7 @@ const AppRoutes = () => {
           },
           {
             path: "ipo/add",
-            element: <DialogUpdateCompanyData isNew={true} />,
+            element: <DialogUpdateCompanyData isNew />,
           },
         ],
       },
@@ -37,7 +43,7 @@ const AppRoutes = () => {
       },
     ],
     {
-      basename: "/",
+      // basename: "/",
     }
   );
   return <RouterProvider router={routes} />;

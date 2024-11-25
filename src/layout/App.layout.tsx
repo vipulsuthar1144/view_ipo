@@ -1,11 +1,19 @@
+import useLocalStorage from "@/config/hooks/useLocalStorage.hooks";
+import AppTopbar from "@components/AppTopbar";
 import { Box, Theme } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Outlet } from "react-router-dom";
+import { localstorageKeys } from "@utils/contant";
+import { Navigate, Outlet } from "react-router-dom";
 import AppColors from "../theme/utils/AppColors";
-import AppTopbar from "@components/AppTopbar";
 
 const AppLayout = () => {
   const classes = useStyles();
+  const [isLoggedIn] = useLocalStorage(localstorageKeys.IS_LOGGED_IN, "false");
+
+  if (isLoggedIn == "false") {
+    return <Navigate to={"/login"} replace />;
+  }
+
   return (
     <Box className={classes.root}>
       <AppTopbar />
