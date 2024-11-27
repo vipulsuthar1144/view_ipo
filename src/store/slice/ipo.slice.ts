@@ -1,19 +1,8 @@
-import {
-  addIPO,
-  deleteIPObyId,
-  fetchCompaniesList,
-  fetchCompanyIPObyId,
-  updateIPO,
-} from "./../thunkService/ipo.thunkService";
 import { IIPOSchema } from "@/schema/ipo.schema";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { addIPO, deleteIPObyId, fetchCompanyIPObyId, updateIPO } from "./../thunkService/ipo.thunkService";
 
 interface IIPOSlice {
-  isCompaniesListLoading: boolean;
-  isCompaniesListError: boolean;
-  companyLastVisible: string | null;
-  companiesList: IIPOSchema[];
-
   isIPODataLoading: boolean;
   isIPODataError: boolean;
   IPOData: IIPOSchema | null;
@@ -29,14 +18,11 @@ interface IIPOSlice {
   isCRUDIPOError: boolean;
 
   isIPOActive: boolean;
+
+  ipoIdForDelete: string;
 }
 
 const initialState: IIPOSlice = {
-  isCompaniesListError: false,
-  isCompaniesListLoading: false,
-  companiesList: [],
-  companyLastVisible: null,
-
   isIPODataError: false,
   isIPODataLoading: false,
   IPOData: null,
@@ -51,13 +37,17 @@ const initialState: IIPOSlice = {
   isCRUDIPOError: false,
   isCRUDIPOLoading: false,
 
-  isIPOActive: true,
+  isIPOActive: false,
+  ipoIdForDelete: "",
 };
 
 const ipoSlice = createSlice({
   name: "ipo",
   initialState: initialState,
   reducers: {
+    setIPOIdForDelete: (state, action: PayloadAction<string>) => {
+      state.ipoIdForDelete = action.payload;
+    },
     updateLeadManagersList: (state, action: PayloadAction<string[]>) => {
       state.leadManagers = [...action.payload];
     },
@@ -82,23 +72,7 @@ const ipoSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCompaniesList.pending, (state) => {
-        state.isCompaniesListLoading = true;
-      })
-      .addCase(fetchCompaniesList.fulfilled, (state, action) => {
-        state.isCompaniesListLoading = false;
-        console.log(action.payload);
-        // state.companiesList = [
-        //   ...state.companiesList,
-        //   ...(action.payload?.companies ?? []),
-        // ];
-        state.companiesList = [...(action.payload?.companies ?? [])];
-        state.companyLastVisible = action.payload?.lastVisible ?? null;
-      })
-      .addCase(fetchCompaniesList.rejected, (state) => {
-        state.isCompaniesListLoading = false;
-        state.isCompaniesListError = true;
-      })
+
       .addCase(fetchCompanyIPObyId.pending, (state) => {
         state.isIPODataLoading = true;
       })
@@ -107,6 +81,7 @@ const ipoSlice = createSlice({
         state.isIPODataError = false;
         console.log("IPOData: ", action.payload);
         state.IPOData = action.payload;
+        state.isIPOActive = action.payload?.is_active ?? false;
       })
       .addCase(fetchCompanyIPObyId.rejected, (state) => {
         state.isIPODataLoading = false;
@@ -156,6 +131,7 @@ export const {
   updateCompanyStrengthList,
   updateCompanyWeaknessList,
   updateCompanyIPOActiveStatus,
+  setIPOIdForDelete,
 } = ipoSlice.actions;
 
 export default ipoSlice.reducer;

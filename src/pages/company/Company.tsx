@@ -1,46 +1,65 @@
-import AppColors from "@/theme/utils/AppColors";
+import useIPOs from "@/service/useIPOs";
 import { RootContainer } from "@components/design/styledComponents";
 import FallbackError from "@components/FallbackError";
-import ItemCompanyList from "@components/ItemCompanyList";
-import { AddCircleRounded } from "@mui/icons-material";
-import { AppBar, Button, CircularProgress, Grid2, ToggleButton, ToggleButtonGroup, Toolbar } from "@mui/material";
-import useCompanyController from "./Company.controller";
+import IPOCard from "@components/IPOCard";
+import { Add } from "@mui/icons-material";
+import { Button, CircularProgress, Grid2, Stack, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 
 const Company = () => {
   const {
+    ipos,
+    loading,
+    error,
+    hasMore,
+    loadMore,
+    filterIPOs,
+    filterStatus,
     listenerGoToCompanyDetails,
     listenerGoToAddIPO,
-    isCompaniesListLoading,
-    isCompaniesListError,
-    companiesList,
-    companyLastVisible,
-    filterStatus,
-    setFilterStatus,
-  } = useCompanyController();
+  } = useIPOs();
 
   const renderCompanyList = () => {
-    if (isCompaniesListLoading && !companyLastVisible)
-      return (
-        <CircularProgress size={40} thickness={5} sx={{ color: "loader.main", alignSelf: "center", margin: "auto" }} />
-      );
-
-    if (isCompaniesListError) return <FallbackError type="something_went_wrong" />;
-    if (companiesList.length === 0 && !isCompaniesListLoading)
-      return <FallbackError type="data_not_found" message="No Companies Found" />;
+    if (error) return <FallbackError type="something_went_wrong" />;
+    if (ipos.length === 0 && !loading) return <FallbackError type="data_not_found" message="No IPO's Available" />;
     return (
-      <Grid2 container spacing={{ xs: 1, sm: 2 }}>
-        {companiesList?.map((item) => (
-          <Grid2 size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={item.id}>
-            <ItemCompanyList onClick={() => listenerGoToCompanyDetails(item.id)} IPOData={item} />
-          </Grid2>
-        ))}
-      </Grid2>
+      <>
+        <Grid2 container width={"100%"} spacing={{ xs: 1, sm: 2 }}>
+          {ipos?.map((item) => (
+            <Grid2 size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={item.id}>
+              <IPOCard ipo={item} onClick={() => listenerGoToCompanyDetails(item.id)} />
+            </Grid2>
+          ))}
+        </Grid2>
+        {loading && (
+          <CircularProgress
+            size={24}
+            thickness={5}
+            sx={{ color: "loader.main", alignSelf: "center", margin: " 0 auto", mt: "10px" }}
+          />
+        )}
+        {hasMore && !loading && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={loadMore}
+            sx={{ width: "fit-content", alignSelf: "center", margin: " 0 auto", padding: "5px 15px", mt: "10px" }}
+          >
+            Load More
+          </Button>
+        )}
+        {!hasMore && !loading && (
+          <Typography variant="h5" sx={{ alignSelf: "center", margin: " 0 auto", mt: "10px" }}>
+            No more IPO's available.
+          </Typography>
+        )}
+      </>
     );
   };
 
   const handleFilterStatusChange = (_: React.MouseEvent<HTMLElement>, newValue: string | null) => {
     if (newValue !== null && (newValue == "all" || newValue == "active" || newValue == "inactive")) {
-      setFilterStatus(newValue);
+      // setFilterStatus(newValue);
+      filterIPOs(newValue);
     }
   };
 
@@ -53,20 +72,22 @@ const Company = () => {
         aria-label="Filter IPO"
         sx={{
           "& .MuiToggleButton-root": {
-            color: "purple",
-            borderColor: "purple",
+            color: "primary.main",
+            borderColor: "primary.main",
             borderRadius: "20px",
             padding: "8px 20px",
             marginBottom: "10px",
+            backgroundColor: "transparent",
             "&:not(:last-of-type)": {
               marginRight: "10px",
             },
             "&.Mui-selected": {
               color: "white",
-              backgroundColor: "purple",
+              backgroundColor: "primary.main",
             },
             "&:hover": {
-              backgroundColor: "purple.500",
+              backgroundColor: "primary.main",
+              color: "white",
             },
           },
         }}
@@ -85,42 +106,24 @@ const Company = () => {
   };
 
   return (
-    <RootContainer>
-      <AppBar
-        sx={{
-          position: "sticky",
-          top: 100,
-          zIndex: 8,
-          backgroundColor: AppColors.white,
-          borderRadius: "10px",
-          marginBottom: "10px",
-        }}
-      >
-        <Toolbar>
-          <Button
-            variant="outlined"
-            startIcon={<AddCircleRounded />}
-            sx={{
-              borderRadius: "50px",
-              color: AppColors.greenColor,
-              borderColor: AppColors.greenColor,
-              alignSelf: "center",
-              margin: "0 auto",
-            }}
-            onClick={listenerGoToAddIPO}
-          >
-            Add IPO
-          </Button>
-        </Toolbar>
-      </AppBar>
-      {renderFilterButtons()}
+    <RootContainer style={{ marginTop: "0px" }}>
+      <Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
+        {renderFilterButtons()}
+        <Button
+          variant="contained"
+          color="success"
+          startIcon={<Add />}
+          sx={{
+            borderRadius: "50px",
+            padding: "8px 20px",
+          }}
+          onClick={listenerGoToAddIPO}
+        >
+          Add IPO
+        </Button>
+      </Stack>
+
       {renderCompanyList()}
-      {/* <Button onClick={loadMore} disabled={isCompaniesListLoading}>
-        Load More
-        {isCompaniesListLoading && (
-          <CircularProgress size={20} sx={{ ml: "10px" }} />
-        )}
-      </Button> */}
     </RootContainer>
   );
 };

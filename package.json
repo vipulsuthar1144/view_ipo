@@ -21,6 +21,7 @@
     "@mui/utils": "^6.1.4",
     "@mui/x-date-pickers": "^7.22.0",
     "@reduxjs/toolkit": "^2.3.0",
+    "bcrypt": "^5.1.1",
     "env-cmd": "^10.1.0",
     "firebase": "^10.14.1",
     "moment": "^2.30.1",

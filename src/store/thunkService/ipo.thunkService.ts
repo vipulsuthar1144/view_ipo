@@ -1,30 +1,6 @@
 import { IIPOSchema } from "@/schema/ipo.schema";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  addIPOAPI,
-  deleteIPObyIdAPI,
-  fetchCompaniesListAPI,
-  fetchCompanyIPOByIdAPI,
-  updateIPOAPI,
-} from "./../../service/ipo.services";
-
-export const fetchCompaniesList = createAsyncThunk(
-  "company/fetchCompaniesList",
-  async (
-    {
-      pageSize,
-      lastVisible,
-      fetchType,
-    }: { pageSize: number; fetchType: "all" | "active" | "inactive"; lastVisible?: string | null },
-    { rejectWithValue }
-  ) => {
-    try {
-      return await fetchCompaniesListAPI({ pageSize, lastVisible, fetchType });
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-  }
-);
+import { addIPOAPI, deleteIPObyIdAPI, fetchCompanyIPOByIdAPI, updateIPOAPI } from "./../../service/ipo.services";
 
 export const fetchCompanyIPObyId = createAsyncThunk(
   "GET/fetchCompanyIPObyId",

@@ -10,13 +10,7 @@ export interface IGlobalImageProps {
   onClick?: (e: any) => void;
 }
 
-const ImageComp = ({
-  img,
-  alt,
-  style,
-  onClick,
-  isPreventClickEffect = false,
-}: IGlobalImageProps) => {
+const ImageComp = ({ img, alt, style, onClick, isPreventClickEffect = false }: IGlobalImageProps) => {
   return (
     <>
       <Box
@@ -77,6 +71,7 @@ const ImageCompWithLoader = ({
           setImgSrc(errorImage);
           setIsLoading(false);
         }}
+        draggable={false}
         loading="lazy"
         sx={{
           width: "100%",

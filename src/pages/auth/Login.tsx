@@ -31,19 +31,20 @@ const LoginPage: React.FC = () => {
   return (
     <Stack
       direction="row"
-      justifyContent="center"
+      justifyContent="flex-start"
       alignItems="center"
       sx={{
         width: "100%",
         height: "100vh",
         overflow: "hidden",
-        backgroundColor: "secondary.main",
+        backgroundColor: "primary.main",
       }}
     >
       <Box
         sx={{
           flex: 1,
           width: "50%",
+          maxWidth: "90%",
           height: "100%",
           backgroundColor: "white",
           borderTopRightRadius: "100px",
@@ -67,7 +68,7 @@ const LoginPage: React.FC = () => {
             // backgroundColor: "background.paper",
           }}
         >
-          <Typography variant="h2" color="secondary.main" gutterBottom>
+          <Typography variant="h2" color="primary.main" style={{ fontSize: "35px" }} gutterBottom>
             Welcome Back
           </Typography>
           <Typography variant="subtitle1" gutterBottom>
@@ -140,13 +141,14 @@ const LoginPage: React.FC = () => {
               loading={isLoginLoading}
               type="submit"
               variant="contained"
-              color="secondary"
+              color="primary"
               label="Login"
+              mt={"20px"}
               style={{
                 width: "100%",
                 textTransform: "none",
                 fontWeight: "bold",
-                borderRadius: 2,
+                // borderRadius: 2,
               }}
             />
           </Box>

@@ -4,6 +4,7 @@ import { Box, Typography } from "@mui/material";
 export const RootContainer = styled(Box)({
   // flex: 1,
   width: "100%",
+  maxWidth: "90em",
   minHeight: "80vh",
   display: "flex",
   flexDirection: "column",

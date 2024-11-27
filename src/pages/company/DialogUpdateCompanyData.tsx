@@ -34,6 +34,7 @@ import * as React from "react";
 import { Controller, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import EditableChips from "./EditableChips";
+import { showCustomToast } from "@utils/customToast";
 
 type FormValues = IIPOSchema;
 
@@ -156,6 +157,20 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
     }
   };
 
+  const validateDates = (ipo: FormValues) => {
+    const today = new Date();
+    const openDate = new Date(ipo?.timeline?.open_date ?? "");
+    const closeDate = new Date(ipo?.timeline?.end_date ?? "");
+    const allotmentDate = new Date(ipo?.timeline?.allotment_date ?? "");
+    const listedDate = new Date(ipo?.timeline?.listing_date ?? "");
+
+    if (openDate < today && isNew) return "Open date must be in the future.";
+    if (closeDate <= openDate) return "Close date must be after open date.";
+    if (allotmentDate <= closeDate) return "Allotment date must be after close date.";
+    if (listedDate <= allotmentDate) return "Listed date must be after allotment date.";
+    return true;
+  };
+
   const editCompanyData = () => {
     return (
       <>
@@ -212,7 +227,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
               helperText={errors.company_logo ? errors.company_logo.message : null}
               {...register("company_logo", { required: "Company logo is required" })}
             />
-            <IsActiveSwitch isActive={isNew ? true : IPOData?.is_active} />
+            <IsActiveSwitch isActive={isNew ? false : IPOData?.is_active} />
           </Box>
         </Box>
       </>
@@ -241,6 +256,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                       label=""
                       value={moment(field.value)}
                       onChange={(newDate) => field.onChange(newDate?.format("YYYY-MM-DD").toString())}
+                      defaultValue={moment()}
                       slotProps={{
                         textField: {
                           required: true,
@@ -268,6 +284,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                       {...field}
                       label=""
                       value={moment(field.value)}
+                      defaultValue={moment()}
                       onChange={(newDate) => field.onChange(newDate?.format("YYYY-MM-DD").toString())}
                       slotProps={{
                         textField: {
@@ -296,6 +313,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                       {...field}
                       label=""
                       value={moment(field.value)}
+                      defaultValue={moment()}
                       onChange={(newDate) => field.onChange(newDate?.format("YYYY-MM-DD").toString())}
                       slotProps={{
                         textField: {
@@ -325,6 +343,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                       {...field}
                       label=""
                       value={moment(field.value)}
+                      defaultValue={moment()}
                       onChange={(newDate) => field.onChange(newDate?.format("YYYY-MM-DD").toString())}
                       slotProps={{
                         textField: {
@@ -624,20 +643,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                 />
               </Box>
             </Grid2>
-            <Grid2 size={{ xs: 12, md: 6 }}>
-              <Box sx={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-                <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
-                  Listing Of Group
-                </Typography>
 
-                <EditableChips
-                  id="listing_of_groups"
-                  label="Group Name"
-                  defaultList={!isNew ? IPOData?.listing_at : null}
-                  title=" "
-                />
-              </Box>
-            </Grid2>
             <Grid2 size={{ xs: 12, md: 6 }}>
               <Box sx={{ display: "flex", flexDirection: "column", gap: "15px" }}>
                 <Typography variant="subtitle1" sx={{ color: AppColors.textSecondary }}>
@@ -730,6 +736,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                             label="Date"
                             value={moment(field.value)}
                             onChange={(newDate) => field.onChange(newDate?.format("YYYY-MM-DD").toString())}
+                            defaultValue={moment()}
                             slotProps={{
                               textField: {
                                 required: true,
@@ -1257,6 +1264,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
                             {...field}
                             label="Date"
                             value={moment(field.value)}
+                            defaultValue={moment()}
                             onChange={(newDate) => field.onChange(newDate?.format("YYYY-MM-DD").toString())}
                             slotProps={{
                               textField: {
@@ -1423,6 +1431,18 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
           label="Promoter Name"
           defaultList={!isNew ? IPOData?.company_promoters : null}
           title="Company Promoter(s)"
+        />
+      </>
+    );
+  };
+  const editListingOfGroups = () => {
+    return (
+      <>
+        <EditableChips
+          id="listing_of_groups"
+          label="Group Name"
+          defaultList={!isNew ? IPOData?.listing_at : null}
+          title="Listing of Groups"
         />
       </>
     );
@@ -1626,7 +1646,16 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
     if (!IPOData && !isNew) return <FallbackError type="data_not_found" message="No Company IPO Found" />;
 
     return (
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form
+        onSubmit={handleSubmit((data) => {
+          const dateValidation = validateDates(data);
+          if (dateValidation == true) {
+            onSubmit(data);
+          } else {
+            showCustomToast(dateValidation, "error");
+          }
+        })}
+      >
         <AppBar
           sx={{
             position: "sticky",
@@ -1643,12 +1672,12 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
             </Typography>
             <Button
               variant="outlined"
+              color="success"
               type="submit"
               startIcon={<Save />}
               sx={{
                 borderRadius: "50px",
-                color: AppColors.greenColor,
-                borderColor: AppColors.greenColor,
+                padding: "8px 20px",
               }}
               // onClick={handleClose}
             >
@@ -1673,6 +1702,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
           {editApplicationDetails()}
           {editCompanyMarketLot()}
           {editCompanyValuations()}
+          {editListingOfGroups()}
           {editCompanyLeadManagers()}
           {editCompanyPromoters()}
           {editCompanyIssueObjectives()}
@@ -1710,6 +1740,6 @@ export const useStyles = makeStyles({
     width: "100%",
     borderRadius: "10px",
     overflow: "hidden",
-    boxShadow: "0px 10px 10px 2px rgba(0,0,0,0.2)",
+    // boxShadow: "0px 10px 10px 2px rgba(0,0,0,0.2)",
   },
 });

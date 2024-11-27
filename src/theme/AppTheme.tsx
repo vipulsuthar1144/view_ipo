@@ -1,4 +1,4 @@
-import { createTheme, responsiveFontSizes, ThemeProvider } from "@mui/material";
+import { createTheme, CssBaseline, responsiveFontSizes, ThemeProvider } from "@mui/material";
 import { deepmerge } from "@mui/utils";
 import React, { useMemo } from "react";
 import { ToastContainer } from "react-toastify";
@@ -20,8 +20,8 @@ const AppTheme = ({ children }: IAppThemeProps) => {
 
   return (
     <ThemeProvider theme={appTheme}>
+      <CssBaseline enableColorScheme />
       <ToastContainer />
-      {/* <CssBaseline enableColorScheme /> */}
       {children}
     </ThemeProvider>
   );

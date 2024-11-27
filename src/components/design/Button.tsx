@@ -13,6 +13,7 @@ export interface ILoaderButtonProps extends IGlobalButtonProps {
   variant: "text" | "outlined" | "contained";
   color: "primary" | "success" | "secondary";
   loading?: boolean;
+  mt?: string;
 }
 
 export const LoaderButton = ({
@@ -24,6 +25,8 @@ export const LoaderButton = ({
   loading = false,
   style,
   startIcon,
+  mt = "0px",
+  disabled = false,
 }: ILoaderButtonProps) => {
   const buttonType = type === "reset" || type === "submit" ? type : "button";
   return (
@@ -34,14 +37,14 @@ export const LoaderButton = ({
         alignItems: "center",
         justifyContent: "center",
         width: "100%",
-        marginTop: "20px",
+        mt: mt,
       }}
     >
       <Button
         startIcon={startIcon}
         variant={variant}
         color={color}
-        disabled={loading}
+        disabled={loading || disabled}
         type={buttonType}
         onClick={onClick}
         sx={{

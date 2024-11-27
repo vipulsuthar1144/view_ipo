@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
+import moment from "moment";
 import React, { useState } from "react";
 
 interface RowData {
@@ -64,7 +65,7 @@ const EditableTable: React.FC = () => {
             {rows.map((row) => (
               <TableRow key={row.id}>
                 <TableCell>
-                  <DatePicker name="startDate" />
+                  <DatePicker name="startDate" defaultValue={moment()} />
                 </TableCell>
                 <TableCell>
                   <AppTextField label="" name="assets" />

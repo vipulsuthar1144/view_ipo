@@ -10,6 +10,7 @@ import {
   Backdrop,
   Box,
   Button,
+  Chip,
   CircularProgress,
   Grid2,
   List,
@@ -27,7 +28,14 @@ import {
   Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { formatDate, formatNumber, formatPrice, isPastDate, isPastOrSameDate } from "@utils/genaralFunctions";
+import {
+  computeIPOStatus,
+  formatDate,
+  formatNumber,
+  formatPrice,
+  isPastDate,
+  isPastOrSameDate,
+} from "@utils/genaralFunctions";
 import useCompanyDetailsController from "./CompanyDetails.controller";
 const CompanyDetails = () => {
   const classes = useStyles();
@@ -48,7 +56,7 @@ const CompanyDetails = () => {
       return "";
     }
     return (
-      <Typography variant="h6" color={AppColors.textSecondary}>
+      <Typography variant="h6" sx={{ flex: 1, textAlign: "flex-end" }} color={AppColors.textSecondary}>
         <span style={{ color: AppColors.greenColor, fontSize: "25px" }}>₹ {formatNumber(retailMinAmount)}</span>/{" "}
         {retailMinShares} Shares
       </Typography>
@@ -72,110 +80,22 @@ const CompanyDetails = () => {
   };
 
   const renderIPOStatus = () => {
-    if (isPastDate(IPOData?.timeline?.listing_date ?? "")) {
-      return (
-        <span
-          style={{
-            padding: "0px 10px",
-            borderRadius: "5px",
-            margin: "0 20px",
-            backgroundColor: "green",
-            textTransform: "capitalize",
-            color: "white",
-            fontSize: "18px",
-          }}
-        >
-          Listed
-        </span>
-      );
-    }
-    if (isPastDate(IPOData?.timeline?.allotment_date ?? "")) {
-      return (
-        <span
-          style={{
-            padding: "0px 10px",
-            borderRadius: "5px",
-            margin: "0 20px",
-            backgroundColor: "orange",
-            textTransform: "capitalize",
-            color: "white",
-            fontSize: "18px",
-          }}
-        >
-          {`•`}
-          Allotment Out
-        </span>
-      );
-    }
-    if (isPastDate(IPOData?.timeline?.end_date ?? "")) {
-      return (
-        <span
-          style={{
-            padding: "0px 10px",
-            borderRadius: "5px",
-            margin: "0 20px",
-            backgroundColor: "red",
-            textTransform: "capitalize",
-            color: "white",
-            fontSize: "18px",
-          }}
-        >
-          {`•`}
-          Closed
-        </span>
-      );
-    }
-    if (isPastOrSameDate(IPOData?.timeline?.open_date ?? "")) {
-      return (
-        <span
-          style={{
-            padding: "0px 10px",
-            borderRadius: "5px",
-            margin: "0 20px",
-            backgroundColor: "green",
-            textTransform: "capitalize",
-            color: "white",
-            fontSize: "18px",
-          }}
-        >
-          {`•`}
-          Live
-        </span>
-      );
-    }
-    if (!isPastDate(IPOData?.timeline?.open_date ?? "")) {
-      return (
-        <span
-          style={{
-            padding: "0px 10px",
-            borderRadius: "5px",
-            margin: "0 20px",
-            backgroundColor: "purple",
-            textTransform: "capitalize",
-            color: "white",
-            fontSize: "18px",
-          }}
-        >
-          {`•`}
-          Pre Apply
-        </span>
-      );
-    }
+    const ipoStatus = computeIPOStatus(IPOData ?? {});
     return (
-      <span
-        style={{
-          padding: "0px 10px",
-          borderRadius: "5px",
-          margin: "0 20px",
-          backgroundColor: "green",
-          textTransform: "capitalize",
+      <Chip
+        label={`• ${ipoStatus.status}`}
+        sx={{
+          px: "5px",
+          py: "5px",
+          height: "fit-content",
+          fontSize: "13px",
           color: "white",
-          fontSize: "18px",
+          fontWeight: 600,
+          letterSpacing: "0.5px",
+          borderRadius: "40px",
+          backgroundColor: ipoStatus.bgColor,
         }}
-      >
-        {`•`}
-        {`${IPOData?.status}`}
-      </span>
+      />
     );
   };
 
@@ -208,6 +128,7 @@ const CompanyDetails = () => {
             display: "flex",
             gap: "30px",
             flexWrap: "wrap",
+            position: "relative",
           }}
         >
           <ImageCompWithLoader
@@ -225,13 +146,28 @@ const CompanyDetails = () => {
               maxWidth: "100px",
             }}
           />
+          <Chip
+            label="Inactive"
+            sx={{
+              px: "2px",
+              py: "3px",
+              height: "fit-content",
+              fontSize: "13px",
+              color: "white",
+              fontWeight: 500,
+              borderRadius: "0px",
+              borderBottomRightRadius: "10px",
+              backgroundColor: "grey",
+              position: "absolute",
+              top: "0px",
+              left: "0px",
+              display: IPOData.is_active == true ? "none" : "flex",
+            }}
+          />
           <Box sx={{ flex: 3, minWidth: "fit-content" }}>
-            <Typography variant="h5" color={IPOData.is_active ? "success.main" : "error.main"}>
-              {IPOData.is_active ? "Active" : "Inactive"}
-            </Typography>
+            {renderIPOStatus()}
             <Typography variant="h3" mb={"5px"}>
               {IPOData.company_name}
-              {renderIPOStatus()}
             </Typography>
             {renderOfferDateOrListedOnDate(IPOData?.timeline)}
           </Box>
@@ -245,14 +181,12 @@ const CompanyDetails = () => {
               alignItems: "flex-end",
             }}
           >
-            {/* <DialogUpdateCompanyData ipoData={IPOData} /> */}
             <Button
-              variant="outlined"
+              variant="contained"
+              color="primary"
               startIcon={<Edit />}
               sx={{
-                borderRadius: "50px",
-                color: AppColors.greenColor,
-                borderColor: AppColors.greenColor,
+                padding: "5px 24px",
               }}
               onClick={listenerGoToUpdateScreen}
             >
@@ -260,11 +194,10 @@ const CompanyDetails = () => {
             </Button>
             <Button
               variant="outlined"
+              color="error"
               startIcon={<DeleteForever />}
               sx={{
-                borderRadius: "50px",
-                color: "error.main",
-                borderColor: "error.main",
+                padding: "5px 24px",
                 marginTop: "10px",
               }}
               onClick={handleDeleteIPObyId}
@@ -903,71 +836,6 @@ const useStyles = makeStyles({
     // height: "fit-content",
     borderRadius: "10px",
     // overflow: "hidden",
-    boxShadow: "0px 10px 10px 2px rgba(0,0,0,0.2)",
+    // boxShadow: "0px 10px 10px 2px rgba(0,0,0,0.2)",
   },
 });
-
-// const ChipInput: React.FC = () => {
-//   const [inputValue, setInputValue] = useState<string>("");
-//   const [chips, setChips] = useState<string[]>([]);
-
-//   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-//     if (event.key === "Alt" && inputValue.trim()) {
-//       setChips([...chips, inputValue.trim()]);
-//       setInputValue(""); // Clear input after adding the chip
-//     }
-//   };
-
-//   const handleDeleteChip = (chipToDelete: string) => {
-//     setInputValue("");
-//     setChips((preChips) => preChips.filter((chip) => chip !== chipToDelete));
-//   };
-
-//   return (
-//     <Box>
-//       <TextField
-//         label="Enter something"
-//         variant="outlined"
-//         multiline
-//         value={inputValue}
-//         onChange={(e) => setInputValue(e.target.value)}
-//         onKeyDown={handleKeyDown}
-//         fullWidth
-//       />
-//       <Box sx={{ marginTop: 2 }}>
-//         {chips.map((chip, index) => (
-//           <Box
-//             component={"div"}
-//             key={index}
-//             onClick={() => setInputValue(chip)}
-//             sx={{
-//               backgroundColor: "#e0e0e0",
-//               borderRadius: "16px",
-//               padding: "8px",
-//               margin: "4px",
-//               width: "fit-content",
-//               cursor: "pointer",
-//               // fontSize: "14px", // Font size for the chip
-//               // minWidth: "100px", // Minimum width for the chip
-//               // maxWidth: "calc(100% - 16px)", // Maximum width for the chip
-//               wordWrap: "break-word", // Allow word breaking to create new lines
-//               overflowWrap: "break-word", // Allow overflow breaking
-//             }}
-//           >
-//             <span>{chip}</span>
-
-//             <Button
-//               onClick={(e) => {
-//                 e.stopPropagation();
-//                 handleDeleteChip(chip);
-//               }}
-//               sx={{ marginLeft: 1 }}
-//             >
-//               <Delete color="error" />
-//             </Button>
-//           </Box>
-//         ))}
-//       </Box>
-//     </Box>
-//   );
-// };

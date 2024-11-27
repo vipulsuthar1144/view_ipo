@@ -1,4 +1,4 @@
-import { auth } from "@/config/firebase.config";
+import { auth, errorHandler } from "@/config/firebase.config";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 const loginAPI = async (email: string, password: string) => {
@@ -7,6 +7,7 @@ const loginAPI = async (email: string, password: string) => {
     console.log("Logged in successfully:", userCredential.user);
   } catch (error: any) {
     console.error("Login failed:", error.code);
+    errorHandler(error);
     throw new Error("Login failed");
   }
 };

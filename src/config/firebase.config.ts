@@ -1,6 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { logout } from "@/service/login.services";
+import { showCustomToast } from "@utils/customToast";
 
 // const firebaseConfig = {
 //   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -24,8 +26,20 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-export const collectionName = "new_ipos";
+export const ipoCollectionName = "new_ipos";
+export const userCollectionName = "users";
 
 export const auth = getAuth(app);
 
 export const db = getFirestore(app);
+
+export const errorHandler = (error: any) => {
+  if (error.code === "permission-denied" || error.code === "unauthenticated") {
+    console.log("Unauthorized. Logging out...");
+    logout();
+  }
+  if (error.code === "auth/network-request-failed" || error.code === "network-request-failed") {
+    showCustomToast("Check your Internet connection", "error");
+  }
+  throw new Error(error.message || "something went wrong");
+};

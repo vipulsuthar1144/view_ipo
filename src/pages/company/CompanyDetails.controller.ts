@@ -1,5 +1,7 @@
+import { setDialogConfimationAction, toggleDialogConfimation } from "@/store/slice/dialog.slice";
+import { setIPOIdForDelete } from "@/store/slice/ipo.slice";
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import { deleteIPObyId, fetchCompanyIPObyId } from "@/store/thunkService/ipo.thunkService";
+import { fetchCompanyIPObyId } from "@/store/thunkService/ipo.thunkService";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -18,9 +20,9 @@ const useCompanyDetailsController = () => {
   }, [dispatch, companyId]);
 
   const handleDeleteIPObyId = () => {
-    dispatch(deleteIPObyId(companyId ?? "")).then(() => {
-      if (!isCRUDIPOLoading && !isCRUDIPOError) navigate("/", { replace: true });
-    });
+    dispatch(setIPOIdForDelete(companyId ?? ""));
+    dispatch(setDialogConfimationAction("delete_ipo"));
+    dispatch(toggleDialogConfimation(true));
   };
 
   const listenerGoToUpdateScreen = () => {

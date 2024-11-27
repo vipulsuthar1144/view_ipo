@@ -29,12 +29,12 @@ export const getButton = (theme: Theme): MButton => {
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: "8px",
+          borderRadius: "10px",
           textTransform: "none",
           cursor: "pointer",
-          padding: "10px 24px",
+          padding: "12px 24px",
           boxSizing: "border-box",
-          marginLeft: 1.5,
+          // marginLeft: 1.5,
           // padding: "6px 20px",
           fontSize: "14px",
           transition: `transform 0.2s ease`,
