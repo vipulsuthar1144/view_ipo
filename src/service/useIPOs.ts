@@ -27,10 +27,10 @@ const useIPOs = () => {
   const [hasMore, setHasMore] = useState(true);
   const [filterStatus, setFilterStatus] = useState<"all" | "active" | "inactive">("all");
   const navigate = useNavigate();
-  const auth = getAuth();
 
   const fetchIPOs = async (isInitial = false, status: "all" | "active" | "inactive" = "all") => {
     try {
+      const auth = getAuth();
       const user = auth.currentUser;
       if (!user) {
         logout();

@@ -2,7 +2,11 @@ export interface IIPOSchema {
   id?: string;
   is_active?: boolean;
   company_name?: string;
-  company_logo?: string;
+  company_logo?: {
+    url?: string;
+    width?: string;
+    height?: string;
+  };
   slug?: string;
   company_about?: string;
   company_contact_info?: IContactInfo;

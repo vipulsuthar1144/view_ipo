@@ -132,7 +132,7 @@ const CompanyDetails = () => {
           }}
         >
           <ImageCompWithLoader
-            img={IPOData.company_logo}
+            img={IPOData.company_logo?.url}
             alt={"Company logo"}
             errorImage={imgDefaultCompany}
             style={{

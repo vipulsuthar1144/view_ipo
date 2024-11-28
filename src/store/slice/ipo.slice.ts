@@ -1,6 +1,7 @@
 import { IIPOSchema } from "@/schema/ipo.schema";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { addIPO, deleteIPObyId, fetchCompanyIPObyId, updateIPO } from "./../thunkService/ipo.thunkService";
+import { imgDefaultCompany } from "@assets/images";
 
 interface IIPOSlice {
   isIPODataLoading: boolean;
@@ -20,6 +21,11 @@ interface IIPOSlice {
   isIPOActive: boolean;
 
   ipoIdForDelete: string;
+
+  selectedImageData: {
+    image: File | null;
+    previewImg: string;
+  };
 }
 
 const initialState: IIPOSlice = {
@@ -39,12 +45,21 @@ const initialState: IIPOSlice = {
 
   isIPOActive: false,
   ipoIdForDelete: "",
+
+  selectedImageData: {
+    image: null,
+    previewImg: imgDefaultCompany,
+  },
 };
 
 const ipoSlice = createSlice({
   name: "ipo",
   initialState: initialState,
   reducers: {
+    updateSelectedImgData: (state, action: PayloadAction<{ image: File | null; previewImg: string }>) => {
+      state.selectedImageData.image = action.payload.image;
+      state.selectedImageData.previewImg = action.payload.previewImg;
+    },
     setIPOIdForDelete: (state, action: PayloadAction<string>) => {
       state.ipoIdForDelete = action.payload;
     },
@@ -68,6 +83,9 @@ const ipoSlice = createSlice({
     },
     updateCompanyIPOActiveStatus: (state, action: PayloadAction<boolean>) => {
       state.isIPOActive = action.payload;
+    },
+    toggleIsCRUDIPOLoading: (state, action: PayloadAction<boolean>) => {
+      state.isCRUDIPOLoading = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -131,6 +149,8 @@ export const {
   updateCompanyWeaknessList,
   updateCompanyIPOActiveStatus,
   setIPOIdForDelete,
+  updateSelectedImgData,
+  toggleIsCRUDIPOLoading,
 } = ipoSlice.actions;
 
 export default ipoSlice.reducer;

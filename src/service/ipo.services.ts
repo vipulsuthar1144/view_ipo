@@ -1,10 +1,17 @@
 import { ipoCollectionName, db, errorHandler } from "@/config/firebase.config";
 import { IIPOSchema, ISubscription } from "@/schema/ipo.schema";
 import { convertToISODate } from "@utils/genaralFunctions";
+import { getAuth } from "firebase/auth";
 import { addDoc, collection, deleteDoc, doc, getDoc, Timestamp, updateDoc } from "firebase/firestore";
+import { logout } from "./login.services";
 
 export const fetchCompanyIPOByIdAPI = async (companyId: string) => {
   try {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) {
+      logout();
+    }
     const companyRef = doc(db, ipoCollectionName, companyId);
     const snapshot = await getDoc(companyRef);
     if (!snapshot.exists()) {
@@ -28,6 +35,11 @@ export const fetchCompanyIPOByIdAPI = async (companyId: string) => {
 
 export const deleteIPObyIdAPI = async (id: string) => {
   try {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) {
+      logout();
+    }
     const ipoRef = doc(db, ipoCollectionName, id);
     await deleteDoc(ipoRef);
   } catch (error: any) {
@@ -38,6 +50,11 @@ export const deleteIPObyIdAPI = async (id: string) => {
 
 export const addIPOAPI = async (data: IIPOSchema) => {
   try {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) {
+      logout();
+    }
     const convertedData = convertForceStringSchema(data);
     const ipoRef = collection(db, ipoCollectionName);
     await addDoc(ipoRef, { ...convertedData, created_at: Timestamp.now(), updated_at: Timestamp.now() });
@@ -49,6 +66,11 @@ export const addIPOAPI = async (data: IIPOSchema) => {
 
 export const updateIPOAPI = async (id: string, data: IIPOSchema) => {
   try {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) {
+      logout();
+    }
     const convertedData = convertForceStringSchema(data);
     const ipoRef = doc(db, ipoCollectionName, id);
     await updateDoc(ipoRef, { ...convertedData, updated_at: Timestamp.now() });

@@ -1,13 +1,14 @@
+import { storage } from "@/config/firebase.config";
 import { IIPOSchema } from "@/schema/ipo.schema";
+import { toggleIsCRUDIPOLoading } from "@/store/slice/ipo.slice";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { addIPO, fetchCompanyIPObyId, updateIPO } from "@/store/thunkService/ipo.thunkService";
 import AppColors from "@/theme/utils/AppColors";
 import { imgDefaultCompany } from "@assets/images";
-import { ImageCompWithLoader } from "@components/design/Image";
 import { RootContainer } from "@components/design/styledComponents";
 import FallbackError from "@components/FallbackError";
 import IsActiveSwitch from "@components/IsActiveSwitch";
-import { AddCircleOutline, Delete, Save } from "@mui/icons-material";
+import { AddCircleOutline, Delete, Save, Upload } from "@mui/icons-material";
 import {
   Backdrop,
   Box,
@@ -29,12 +30,13 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { makeStyles } from "@mui/styles";
 import { DatePicker } from "@mui/x-date-pickers";
+import { showCustomToast } from "@utils/customToast";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import moment from "moment";
 import * as React from "react";
 import { Controller, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import EditableChips from "./EditableChips";
-import { showCustomToast } from "@utils/customToast";
 
 type FormValues = IIPOSchema;
 
@@ -52,10 +54,17 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
 
   React.useEffect(() => {
     if (companyId) {
-      dispatch(fetchCompanyIPObyId(companyId));
+      dispatch(fetchCompanyIPObyId(companyId))
+        .unwrap()
+        .then((ipo) => {
+          updateSelectedImageFile(null);
+          updateSelectedImagePreview(ipo?.company_logo?.url ?? imgDefaultCompany);
+        });
     }
     return () => {
       IPOData && reset(IPOData);
+      updateSelectedImageFile(null);
+      updateSelectedImagePreview(imgDefaultCompany);
     };
   }, [dispatch, companyId, location.pathname]);
 
@@ -72,10 +81,11 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
     isCRUDIPOLoading,
     isCRUDIPOError,
     isIPOActive,
+    // selectedImageData,
   } = useAppSelector((state) => state.IPO);
 
-  // const [companyLogo, setCompanyLogo] = React.useState(IPOData?.company_logo ?? imgDefaultCompany);
-
+  const [selectedImageFile, updateSelectedImageFile] = React.useState<File | null>(null);
+  const [selectedImagePreview, updateSelectedImagePreview] = React.useState<string>(imgDefaultCompany);
   const {
     register,
     handleSubmit,
@@ -128,7 +138,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
     name: "lot_sizes",
   });
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
     data.lead_managers = leadManagers;
     data.issue_objectives = companyIssueObjectiveList;
     data.company_promoters = companyPromotersList;
@@ -136,6 +146,14 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
     data.company_weaknesses = companyWeaknessList;
     data.listing_at = companyListOfGroupsList;
     data.is_active = isIPOActive;
+
+    dispatch(toggleIsCRUDIPOLoading(true));
+    const { componayLogoURl, companyLogoWidth, companyLogoHeight } = await handleUploadLogo();
+    data.company_logo = {
+      url: componayLogoURl,
+      width: String(companyLogoWidth),
+      height: String(companyLogoHeight),
+    };
     if (isNew) {
       dispatch(addIPO(data))
         .unwrap()
@@ -172,6 +190,64 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
     return true;
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.[0]) return;
+    const file = e.target.files[0];
+
+    if (file.type !== "image/png") {
+      showCustomToast("Please select a PNG file", "error");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => updateSelectedImagePreview(reader.result as string);
+    reader.readAsDataURL(file);
+    updateSelectedImageFile(file);
+  };
+
+  const handleUploadLogo = async () => {
+    if (!selectedImageFile || selectedImageFile == null) {
+      return {
+        componayLogoURl: IPOData?.company_logo?.url ?? "",
+        companyLogoHeight: IPOData?.company_logo?.height ?? "0",
+        companyLogoWidth: IPOData?.company_logo?.width ?? "0",
+      };
+    }
+
+    try {
+      const imgDimensions = await new Promise<{ width: number; height: number }>((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve({ width: img.width, height: img.height });
+        img.onerror = (err) => reject(err);
+        img.src = URL.createObjectURL(selectedImageFile);
+      });
+
+      // Upload to Firebase
+
+      const storageRef = ref(storage, `images/${selectedImageFile.name}`);
+      await uploadBytes(storageRef, selectedImageFile).catch((err) => {
+        throw new Error(`Upload failed: ${err.message}`);
+      });
+
+      const url = await getDownloadURL(storageRef).catch((err) => {
+        throw new Error(`Failed to get download URL: ${err.message}`);
+      });
+
+      return {
+        componayLogoURl: url,
+        companyLogoHeight: imgDimensions.height,
+        companyLogoWidth: imgDimensions.width,
+      };
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return {
+        componayLogoURl: IPOData?.company_logo?.url ?? "",
+        companyLogoHeight: IPOData?.company_logo?.height ?? "0",
+        companyLogoWidth: IPOData?.company_logo?.width ?? "0",
+      };
+    }
+  };
+
   const editCompanyData = () => {
     return (
       <>
@@ -187,25 +263,38 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
             flexWrap: "wrap",
           }}
         >
-          <Box>
-            <ImageCompWithLoader
-              img={isNew ? imgDefaultCompany : IPOData?.company_logo}
-              alt={"Company logo"}
-              errorImage={imgDefaultCompany}
-              style={{
-                width: "100px",
-                alignSelf: "center",
-                objectFit: "contain",
-                aspectRatio: 1,
-                borderRadius: "10px",
-                flex: 1,
-                minWidth: "100px",
-                maxWidth: "100px",
-              }}
+          {/* <LogoUploader imagePreviewURL={!isNew ? IPOData?.company_logo?.url : imgDefaultCompany} /> */}
+          <Box sx={{ minWidth: "150px", minHeight: "150px", maxWidth: "150px", aspectRatio: 1 }}>
+            <input
+              id="file-input"
+              type="file"
+              accept="image/png"
+              onChange={handleFileChange}
+              style={{ display: "none" }}
             />
+            <img
+              src={selectedImagePreview || imgDefaultCompany}
+              alt="Preview"
+              // onError={() => updateSelectedImgData({ image: null, previewImg: imgDefaultCompany })}
+              onClick={() => document.getElementById("file-input")?.click()}
+              style={{ minWidth: "100px", maxWidth: "100px", objectFit: "contain", aspectRatio: 1, cursor: "pointer" }}
+            />
+            <Button
+              startIcon={<Upload />}
+              variant="outlined"
+              color="primary"
+              onClick={() => document.getElementById("file-input")?.click()}
+              sx={{
+                marginTop: "10px",
+                padding: "4px 20px",
+                borderRadius: "10px",
+              }}
+            >
+              Logo
+            </Button>
           </Box>
 
-          <Box sx={{ flex: 3, minWidth: "fit-content" }}>
+          <Box sx={{ flex: 2, minWidth: "fit-content" }}>
             <TextField
               id="company_name"
               label="Company Name"
@@ -215,7 +304,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
               helperText={errors.company_name ? errors.company_name.message : null}
               {...register("company_name", { required: "Company name is required" })}
             />
-            <TextField
+            {/* <TextField
               id="company_logo"
               label="Company Logo URL"
               fullWidth
@@ -227,7 +316,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
               }}
               helperText={errors.company_logo ? errors.company_logo.message : null}
               {...register("company_logo", { required: "Company logo is required" })}
-            />
+            /> */}
             <IsActiveSwitch isActive={isNew ? false : IPOData?.is_active} />
           </Box>
         </Box>

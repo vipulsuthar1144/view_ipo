@@ -9,6 +9,12 @@ export const store = configureStore({
     IPO: ipoReducer,
     dialog: dialogReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredPaths: ["IPO.selectedImageData.image"], // Ignore File object warnings
+      },
+    }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

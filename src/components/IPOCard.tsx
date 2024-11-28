@@ -72,7 +72,7 @@ const IPOCard = ({ ipo, onClick }: IIPOCardProps) => {
         }}
       />
       <ImageCompWithLoader
-        img={ipo?.company_logo}
+        img={ipo?.company_logo?.url}
         alt={ipo?.company_name ?? "Company Name"}
         errorImage={imgDefaultCompany}
         style={{
