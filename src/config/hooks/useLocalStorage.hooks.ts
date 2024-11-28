@@ -24,7 +24,7 @@ const useLocalStorage = <T>(key: string, initialValue: T) => {
     try {
       localStorage.removeItem(key);
     } catch (error) {
-      console.log(`UseLocalStorage useRemoveItemLs error ${error}`);
+      console.error(`UseLocalStorage useRemoveItemLs error ${error}`);
     }
   };
 

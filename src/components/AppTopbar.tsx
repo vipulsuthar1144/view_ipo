@@ -6,14 +6,12 @@ import { AppBar, Button, Toolbar } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import AppColors from "../theme/utils/AppColors";
 import ImageComp from "./design/Image";
-import DialogConfirmation from "./dialog/DialogConfirmation";
 
 const AppTopbar = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   return (
     <>
-      <DialogConfirmation />
       <AppBar
         position="fixed"
         className={classes.appbar}

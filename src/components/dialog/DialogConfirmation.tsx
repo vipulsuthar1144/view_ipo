@@ -22,6 +22,7 @@ import {
 import { collection, getDocs, query, where } from "firebase/firestore";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import bcrypt from "bcryptjs-react";
 
 const DialogConfirmation = () => {
   const [dialogData, setDialogData] = React.useState({
@@ -111,29 +112,37 @@ const DialogConfirmation = () => {
         return;
       }
       const user = snapshot.docs[0].data();
-      console.log(user);
 
-      if (user.security_code !== securityCode) {
+      if (!user.security_code) {
         setIsSecurityCodeError(true);
         return;
       }
-      if (user.security_code !== securityCode) {
-        setIsSecurityCodeError(true);
-        return;
-      }
-      setIsSecurityCodeError(false);
-      setSecurityCode("");
-      switch (dialogConfimationAction) {
-        case "delete_ipo": {
-          handleDeleteIPO();
-          break;
-        }
-        case "change_status_ipo": {
-          handleActiveStatusChange();
-          break;
-        }
-      }
-      handleCloseDialog();
+
+      bcrypt
+        .compare(securityCode, user.security_code)
+        .then((res) => {
+          if (res == false) {
+            setIsSecurityCodeError(true);
+            return;
+          }
+          setIsSecurityCodeError(false);
+          setSecurityCode("");
+          switch (dialogConfimationAction) {
+            case "delete_ipo": {
+              handleDeleteIPO();
+              break;
+            }
+            case "change_status_ipo": {
+              handleActiveStatusChange();
+              break;
+            }
+          }
+          handleCloseDialog();
+        })
+        .catch((err) => {
+          console.error(err);
+          setIsSecurityCodeError(true);
+        });
     } catch (error) {
       console.error(error);
       setIsSecurityCodeError(true);

@@ -137,12 +137,12 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
     data.listing_at = companyListOfGroupsList;
     data.is_active = isIPOActive;
     if (isNew) {
-      // handleNewIPO(data);
       dispatch(addIPO(data))
         .unwrap()
         .then(() => {
           if (!isCRUDIPOLoading && !isCRUDIPOError) {
-            navigate(`/`, { replace: true });
+            // navigate(`/`, { replace: true });
+            navigate(-1);
           }
         });
     } else {
@@ -151,7 +151,8 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
         .unwrap()
         .then(() => {
           if (!isCRUDIPOLoading && !isCRUDIPOError) {
-            companyId && navigate(`/ipo/${companyId}`, { replace: true });
+            // companyId && navigate(`/ipo/${companyId}`, { replace: true });
+            navigate(-1);
           }
         });
     }

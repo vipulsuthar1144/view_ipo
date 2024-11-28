@@ -79,7 +79,6 @@ const ipoSlice = createSlice({
       .addCase(fetchCompanyIPObyId.fulfilled, (state, action) => {
         state.isIPODataLoading = false;
         state.isIPODataError = false;
-        console.log("IPOData: ", action.payload);
         state.IPOData = action.payload;
         state.isIPOActive = action.payload?.is_active ?? false;
       })

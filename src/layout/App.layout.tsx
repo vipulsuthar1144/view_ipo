@@ -5,6 +5,7 @@ import { makeStyles } from "@mui/styles";
 import { localstorageKeys } from "@utils/contant";
 import { Navigate, Outlet } from "react-router-dom";
 import AppColors from "../theme/utils/AppColors";
+import DialogConfirmation from "@components/dialog/DialogConfirmation";
 
 const AppLayout = () => {
   const classes = useStyles();
@@ -16,6 +17,7 @@ const AppLayout = () => {
 
   return (
     <Box className={classes.root}>
+      <DialogConfirmation />
       <AppTopbar />
       <Outlet />
     </Box>

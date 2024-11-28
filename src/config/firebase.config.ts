@@ -35,7 +35,7 @@ export const db = getFirestore(app);
 
 export const errorHandler = (error: any) => {
   if (error.code === "permission-denied" || error.code === "unauthenticated") {
-    console.log("Unauthorized. Logging out...");
+    console.error("Unauthorized. Logging out...");
     logout();
   }
   if (error.code === "auth/network-request-failed" || error.code === "network-request-failed") {

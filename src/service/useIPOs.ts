@@ -83,16 +83,13 @@ const useIPOs = () => {
         } as IIPOSchema;
       });
 
-      console.log(newIPOs);
-
       if (isInitial) {
         setIPOs(newIPOs);
       } else {
         setIPOs((prev) => [...prev, ...newIPOs]);
       }
     } catch (err) {
-      console.log(err);
-
+      console.error(err);
       setError(err instanceof Error ? err : new Error("Failed to fetch IPOs"));
     } finally {
       setLoading(false);
