@@ -86,7 +86,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
 
   const [selectedImageFile, updateSelectedImageFile] = React.useState<File | null>(null);
   const [selectedImagePreview, updateSelectedImagePreview] = React.useState<string>(
-    IPOData?.company_logo?.url || imgDefaultCompany
+    isNew ? imgDefaultCompany : IPOData?.company_logo?.url || imgDefaultCompany
   );
   const {
     register,
