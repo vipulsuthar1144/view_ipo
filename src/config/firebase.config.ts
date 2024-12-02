@@ -21,7 +21,7 @@ export const ipoCollectionName = "new_ipos";
 export const userCollectionName = "users";
 
 export const auth = getAuth(app);
-export const storage = getStorage(app);
+export const storage = getStorage();
 
 export const db = getFirestore(app);
 

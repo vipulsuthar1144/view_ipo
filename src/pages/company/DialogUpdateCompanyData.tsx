@@ -85,7 +85,9 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
   } = useAppSelector((state) => state.IPO);
 
   const [selectedImageFile, updateSelectedImageFile] = React.useState<File | null>(null);
-  const [selectedImagePreview, updateSelectedImagePreview] = React.useState<string>(imgDefaultCompany);
+  const [selectedImagePreview, updateSelectedImagePreview] = React.useState<string>(
+    IPOData?.company_logo?.url || imgDefaultCompany
+  );
   const {
     register,
     handleSubmit,
@@ -148,17 +150,14 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
     data.is_active = isIPOActive;
 
     dispatch(toggleIsCRUDIPOLoading(true));
-    // // const { componayLogoURl, companyLogoWidth, companyLogoHeight } = await handleUploadLogo();
-    // data.company_logo = {
-    //   url: componayLogoURl,
-    //   width: String(companyLogoWidth),
-    //   height: String(companyLogoHeight),
-    // };
+    const { componayLogoURl, companyLogoWidth, companyLogoHeight } = await handleUploadLogo();
 
-    if (data.company_logo) {
-      data.company_logo.width = "0";
-      data.company_logo.height = "0";
-    }
+    data.company_logo = {
+      url: componayLogoURl,
+      width: String(companyLogoWidth),
+      height: String(companyLogoHeight),
+    };
+
     if (isNew) {
       dispatch(addIPO(data))
         .unwrap()
@@ -270,21 +269,21 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
         >
           {/* <LogoUploader imagePreviewURL={!isNew ? IPOData?.company_logo?.url : imgDefaultCompany} /> */}
           <Box sx={{ minWidth: "150px", minHeight: "150px", maxWidth: "150px", aspectRatio: 1 }}>
-            {/* <input
+            <input
               id="file-input"
               type="file"
               accept="image/png"
               onChange={handleFileChange}
               style={{ display: "none" }}
-            /> */}
+            />
             <img
               src={selectedImagePreview || imgDefaultCompany}
               alt="Preview"
-              // onError={() => updateSelectedImgData({ image: null, previewImg: imgDefaultCompany })}
-              // onClick={() => document.getElementById("file-input")?.click()}
+              onError={() => updateSelectedImagePreview(imgDefaultCompany)}
+              onClick={() => document.getElementById("file-input")?.click()}
               style={{ minWidth: "100px", maxWidth: "100px", objectFit: "contain", aspectRatio: 1, cursor: "pointer" }}
             />
-            {/* <Button
+            <Button
               startIcon={<Upload />}
               variant="outlined"
               color="primary"
@@ -296,7 +295,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
               }}
             >
               Logo
-            </Button> */}
+            </Button>
           </Box>
 
           <Box sx={{ flex: 2, minWidth: "fit-content" }}>
@@ -309,7 +308,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
               helperText={errors.company_name ? errors.company_name.message : null}
               {...register("company_name", { required: "Company name is required" })}
             />
-            <TextField
+            {/* <TextField
               id="company_logo.url"
               label="Company Logo URL"
               fullWidth
@@ -321,7 +320,7 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
               }}
               helperText={errors.company_logo?.url ? errors.company_logo.url.message : null}
               {...register("company_logo.url", { required: "Company logo is required" })}
-            />
+            /> */}
             <IsActiveSwitch isActive={isNew ? false : IPOData?.is_active} />
           </Box>
         </Box>
