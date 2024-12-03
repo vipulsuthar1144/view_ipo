@@ -197,9 +197,10 @@ export default function DialogUpdateCompanyData({ isNew = true }: IDialogUpdateC
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0]) return;
     const file = e.target.files[0];
-
-    if (file.type !== "image/png") {
-      showCustomToast("Please select a PNG file", "error");
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if (!file.type.startsWith("image")) {
+      showCustomToast("Please select an image file", "error");
       return;
     }
 

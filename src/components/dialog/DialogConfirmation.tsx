@@ -23,7 +23,6 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import bcrypt from "bcryptjs-react";
-
 const DialogConfirmation = () => {
   const [dialogData, setDialogData] = React.useState({
     dialogTitle: "Logout",
