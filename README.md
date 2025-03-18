@@ -1,50 +1,90 @@
-# React + TypeScript + Vite
+# 📊 View-IPO Admin Panel
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## **🚀 Overview**
+The **View-IPO Admin Panel** is a **CRUD-based** admin dashboard for managing **IPO (Initial Public Offering) data**. Built with **React, TypeScript, and Firebase**, this platform enables seamless IPO data management, including **adding, editing, deleting, and viewing IPO records**. It also includes **Firebase Authentication** for secure access control.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+✅ **CRUD Operations** – Create, Read, Update, Delete IPO records  
+✅ **Firebase Firestore** – Real-time NoSQL database for data storage  
+✅ **Firebase Authentication** – Secure user login & access control  
+✅ **Role-Based Access** – Restrict actions based on user roles  
+✅ **Modern UI** – Styled with **Tailwind CSS**  
+✅ **Fast & Responsive** – Works on all devices  
+✅ **Sorting & Filtering** – Easily manage IPO records  
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **React (Vite) ⚛️** – Fast and lightweight frontend framework  
+- **TypeScript 🟦** – Type safety and better development experience  
+- **Tailwind CSS 🎨** – Utility-first styling for modern UI  
+- **Firebase Firestore 🔥** – Real-time NoSQL database for IPO data  
+- **Firebase Authentication 🔑** – Secure user login & access control  
 
-- Configure the top-level `parserOptions` property like this:
+## 📥 Installation & Setup
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
+1️⃣ **Clone the repository**  
+```sh
+git clone https://github.com/vipulsuthar1144/view_ipo.git
+cd view-ipo
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from "eslint-plugin-react";
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: "18.3" } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs["jsx-runtime"].rules,
-  },
-});
+2️⃣ **Install dependencies**
+```sh
+npm install
 ```
+
+3️⃣ **Create a .env file and add your Firebase configuration**
+
+```sh
+
+VITE_APP_PORT = 5173
+VITE_FIREBASE_API_KEY=----------
+VITE_FIREBASE_AUTH_DOMAIN=---------
+VITE_FIREBASE_PROJECT_ID=---------
+# VITE_FIREBASE_STORAGE_BUCKET=------------
+VITE_FIREBASE_STORAGE_BUCKET=-------------
+VITE_FIREBASE_MESSAGING_SENDER_ID=----------
+VITE_FIREBASE_APP_ID=---------------
+VITE_FIREBASE_MEASUREMENT_ID=-------------
+```
+
+4️⃣ **Run the project**
+```sh
+npm start
+```
+
+The app will be available at http://localhost:5173/
+
+## 🔑 Authentication Setup
+
+- **Email & Password Authentication** – Users can sign up and log in securely.  
+- **Google Sign-In** – Allow users to authenticate via their Google account.
+- **Protected Routes** – Only authenticated users can access the admin dashboard.
+
+## 🔥 Firebase Integration
+This project uses **Firebase Firestore** to store IPO data securely. Make sure to:
+
+- **Enable Firestore Database** in Firebase Console
+- **Enable Firebase Authentication** (Email/Password & Google Sign-In)
+- **Set Up Firestore Security Rules** for authorized access
+- **Update .env** with your Firebase project details
+
+## **🤝 Contributing**
+Contributions are **Welcome!**
+
+Love this project? Want to make it even better? Feel free to **open issues, submit pull requests, or just drop feedback**! Let’s build something amazing together. 💡💻
+
+## **📜 License**
+This project is **open-source** under the **MIT License**.
+
+![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)
+![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)
+
+
+## **📬 Let's Connect!**
+
+Got feedback or ideas? Reach out to me! I’d love to hear from you. 🎉
+
+- 📧 Email: vipulsuthar1144@gmail.com
+- 💼 LinkedIn: [Vipul Suthar | LinkedIn](https://www.linkedin.com/in/vipulsuthar1144/)
