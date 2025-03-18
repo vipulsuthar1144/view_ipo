@@ -1,0 +1,195 @@
+[
+  {
+    "id": "670d495928f59d474c9aca51",
+    "company_id": "670c0a34bf94c1d3906bb7ae",
+    "company": {
+      "id": "670c0a34bf94c1d3906bb7ae",
+      "name": "Garuda Construction and Engineering",
+      "slug": "garuda-construction-and-engineering",
+      "about": "Garuda Construction and Engineering Limited was incorporated on 21st day of September, 2010, and is a fast-emerging civil construction company undertaking comprehensive construction services in residential, commercial, industrial, and infrastructure projects. Garuda has established itself as a quality and innovative trailblazer and earned a good name in the industry.The company specializes in the construction of concrete and steel structures that are not only strong but also durable, offering customers a total solution with MEP solutions. Garuda is proud to be offering its services-from conceptual design to actual project completion-to ensure that all projects meet its commitment to excellence.Renowned for its expertise in hospitality development, Garuda consistently delivers projects that not only meet but exceed client expectations. The firm also offers comprehensive operations and maintenance services, ensuring the sustainability and long-term performance of every structure built.Garuda’s mission is to drive the future of urban development by creating sustainable, innovative, and beautifully designed structures. With a focus on efficiency, client satisfaction, and the use of top-quality materials, Garuda is committed to enhancing urban landscapes with state-of-the-art construction that reflects its core values of social responsibility and design excellence.",
+      "logo": "https://media.ipoji.com/ipo/Garuda_Logo.png",
+      "contact_info": {
+        "address": "201, A Wing, Fortune 2000 C -3 Block, Bandra Kurla Complex, Bandra (East), Mumbai 400 051",
+        "phone": "+91 22 79635174",
+        "email": "compliance@garudaconstructionengineering.com",
+        "website": "https://garudaconstructionengineering.com/"
+      },
+      "promoters": [
+        "Pravinkumar Brijendra Kumar Agarwal",
+        "PKH Ventures Limited",
+        "Makindian Township Private Limited"
+      ],
+      "strengths": [
+        "The company maintains high construction quality and timely delivery through its strong project management capacity, utilizing a fleet of modern construction equipment managed through third-party vendors to remain asset-light.",
+        "As of the latest report, Garuda's order book stood at ₹1,40,827.44 lakhs, indicating strong future revenue potential from ongoing and upcoming projects across various regions.",
+        "Asset Management and Cost Efficiency: By employing third-party vendors for equipment, Garuda strategically keeps its asset base light, which enhances cost efficiency and minimizes operational disruptions, contributing to its financial stability."
+      ],
+      "weaknesses": [
+        "Garuda Construction has experienced negative cash flows from operations in recent periods, totalling (-₹192.64 lakhs) as of November 30, 2023, which could hinder financial stability and operations.",
+        "Venturing into new markets with 64.61% of ongoing projects with unrelated entities exposes Garuda to risks of non-performance, project delays, and potential financial losses."
+      ],
+      "financials": [
+        {
+          "period": "2022-03-30T00:00:00.000Z",
+          "revenue": 77.03,
+          "assets": 111.03,
+          "profit": 18.78
+        },
+        {
+          "period": "2023-03-30T00:00:00.000Z",
+          "revenue": 161.02,
+          "assets": 176.35,
+          "profit": 40.8
+        },
+        {
+          "period": "2024-03-30T00:00:00.000Z",
+          "revenue": 154.47,
+          "assets": 228.49,
+          "profit": 36.44
+        }
+      ],
+      "created_at": "2024-10-13T17:58:12.300Z",
+      "updated_at": "2024-10-13T17:58:12.300Z"
+    },
+
+    "disclaimer": "No financial information whatsoever published anywhere, within this application, should be considered as an advice to buy or sell securities or invest in IPOs, or as a guide to doing so in any way whatsoever. All matter published here is purely for educational and information purposes only and under no circumstances should be used for making investment decisions. We are not a SEBI Registered analyst. Readers must consult a qualified financial advisor prior to making any actual investment decisions, based on information published on this application. The information in the App is based on information available as on date coupled with market perceptions. You agree with the terms and conditions to use the App.",
+    "face_value": 5,
+    "lot_size": 157,
+    "lead_managers": ["Corpwis Advisors Private Limited"],
+    "issue_objectives": [
+      "Working Capital Requirements",
+      "General Corporate Expenses and unidentified inorganic acquisitions",
+      "Cover the Issue Expenses"
+    ],
+    "type": "BOOK_BUILDING_ISSUE",
+    "category": "MAINLINE",
+    "status": "LIVE",
+    "listing_at": ["BSE", "NSE"],
+    "created_at": "2024-10-14T16:39:53.597Z",
+    "updated_at": "2024-10-14T16:39:53.597Z",
+    "issue_price": {
+      "min": 92,
+      "max": 95
+    },
+    "issue_size": {
+      "total": 264,
+      "fresh": 173,
+      "offer_for_sale": 90
+    },
+    "timeline": {
+      "open_date": "2024-10-08T00:00:00Z",
+      "end_date": "2024-10-10T00:00:00Z",
+      "allotment_date": "2024-10-11T00:00:00Z",
+      "listing_date": "2024-10-15T00:00:00Z",
+      "quota": {
+        "retail": 35,
+        "nii": {
+          "s_nii": 5,
+          "b_nii": 15
+        },
+        "qib": 50
+      },
+      "applications": {
+        "retail": 6386760,
+        "nii": {
+          "total": 13479706,
+          "s_nii": 4587697,
+          "b_nii": 8892009
+        },
+        "qib": 29337962,
+        "total": 49204428
+      },
+      "registrar": {
+        "name": "Link Intime India Private Ltd",
+        "phone": "+91-22-4918 6270",
+        "email": "garudaconstructions.ipo@linkintime.co.in",
+        "website": "https://linkintime.co.in/initial_offer/public-issues.html"
+      },
+      "docs": {
+        "drph": "https://www.sebi.gov.in/filings/public-issues/jun-2024/garuda-construction-and-engineering-limited-drhp_83911.html",
+        "rph": "https://corpwis.com/wp-content/uploads/2024/09/RHP_Garuda.pdf",
+        "anchor": "https://www.bseindia.com/markets/MarketInfo/DownloadAttach.aspx?id=20241007-41&attachedId=4845b35c-ad49-4e6e-b753-c5957309cca4"
+      },
+      "valuations": {
+        "earning_per_share": {
+          "pre_ipo": 4.87,
+          "post_ipo": 4.52
+        },
+        "price_earning_ratio": {
+          "pre_ipo": 19.49,
+          "post_ipo": 21.03
+        },
+        "return_on_net_worth": 30.62
+      },
+      "subscriptions": [
+        {
+          "date": "2024-10-08T00:00:00Z",
+          "retail": 3.43,
+          "nii": {
+            "total": 1.1,
+            "s_nii": 0.45,
+            "b_nii": 2.39
+          },
+          "qib": 0.02,
+          "total": 1.91
+        },
+        {
+          "date": "2024-10-09T00:00:00Z",
+          "retail": 6.73,
+          "nii": {
+            "total": 2.58,
+            "s_nii": 1.32,
+            "b_nii": 5.1
+          },
+          "qib": 0.9,
+          "total": 4.1
+        },
+        {
+          "date": "2024-10-10T00:00:00Z",
+          "retail": 10.81,
+          "nii": {
+            "total": 9.03,
+            "s_nii": 7.93,
+            "b_nii": 11.23
+          },
+          "qib": 1.24,
+          "total": 7.55
+        }
+      ],
+      "lot_sizes": [
+        {
+          "application": "retail_min",
+          "lot": 1,
+          "shares": 157,
+          "amount": 14915
+        },
+        {
+          "application": "retail_max",
+          "lot": 13,
+          "shares": 2041,
+          "amount": 193895
+        },
+        {
+          "application": "s_nii_min",
+          "lot": 14,
+          "shares": 2198,
+          "amount": 208810
+        },
+        {
+          "application": "s_nii_max",
+          "lot": 67,
+          "shares": 10519,
+          "amount": 999305
+        },
+        {
+          "application": "b_nii_min",
+          "lot": 68,
+          "shares": 10676,
+          "amount": 1014220
+        }
+      ],
+      "listing_price": null,
+      "subscription_rate": 7.51
+    }
+  }
+]
